@@ -1,0 +1,64 @@
+body {
+    background: #DDDDDD;
+    text-align: center;
+}
+
+footer {
+    background-color: aliceblue;
+    color: green;
+    font-famliy: sans-serif;
+    font-size: 30px;
+    width: 75%;
+    text-align: center;
+    margin: 0 12.5%; 
+}
+
+h1, h3, p {
+    text-align: center;
+}
+
+#pierwszy {
+    background: #AAAAAA;
+}
+
+#drugi {
+    background: #BBBBBB;
+}
+
+table, tr, td, th {
+    border: 1px solid black;
+    font-weight: 0.5;
+    text-align: center;
+}
+
+table, img {
+    margin: 10px auto;
+}
+
+img {
+    display: block;
+}
+
+td, tr, td, th {
+    margin: 0;
+    padding: 10px;
+}
+
+#super {
+    position: relative;
+    left: 3%;
+    top: 130px;
+    background: red;
+    padding: 2px;
+    width: 12%;
+}
+
+.zdjecia-miast img {
+    display: inline-block;
+}
+
+.powrot {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}

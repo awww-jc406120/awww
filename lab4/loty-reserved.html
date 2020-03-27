@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Loty latające </title>
+    <link rel="stylesheet" href="main.css">
+    <meta http-equiv="refresh" content="1" >
+</head>
+<div>
+<body>
+    <div class="main"> 
+        <nav>
+            <ul>
+                <li> <a href=""> Home </a> </li>
+                <li> <a href=""> Loty </a> </li>
+                <li> <a href=""> Samoloty </a> </li>
+                <li> <a href=""> Bilety </a> </li>
+                <li> <a href=""> O nas </a> </li>
+                <li> <a href=""> Współpraca </a> 
+                     <ul>
+                        <li> <a href=""> Reklamy </a> </li>
+                        <li> <a href=""> Zatrudnienie </a> </li>
+                     </ul>
+                </li>   
+                <li> <a href=""> Kontakt </a> </li>
+            <ul>
+        </nav>
+        <article>
+            <h1> Loty </h1>
+            <img src="logo.jpg" width=10%/>
+            <p> Spis lotów: </p>
+
+            <p id="pierwszy">
+                Tu jest pierwszy akapit
+            </p>
+            <p id="drugi">
+                Tu jest drugi akapit
+            </p>
+
+            <div>
+             <p id="super">
+                Ale super lot!
+            </p>
+            <table cellspacing="0">
+                <tr>
+                    <th> Nr lotu </th>
+                    <th> Skąd </th>
+                    <th> Dokąd </th>
+                    <th> Godzina odlotu </th>
+                    <th> Godzina przylotu </th>
+                </tr>
+                <tr>
+                    <td><a href="lot.html"> 3724687 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 10:34 </td>
+                    <td> 11:21 </td>
+                </tr>
+                <tr>
+                    <td><a href="lot.html"> 3724687 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 10:34 </td>
+                    <td> 11:21 </td>
+                </tr>
+                <tr>
+                    <td><a href="lot.html"> 3724687 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 10:34 </td>
+                    <td> 11:21 </td>
+                </tr>
+            </table>
+            </div>
+        </article>
+        <aside>
+            <h2> Opóźnienia </h2>
+            <table cellspacing="0">
+                <tr>
+                    <th> Nr lotu </th>
+                    <th> Skąd </th>
+                    <th> Dokąd </th>
+                    <th> Kiedy </th>
+                    <th> Opóżnienie </th>
+                <tr>
+                <tr class="lekko-opozniony" >
+                    <td><a href="lot.html"> 372123 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 12:000 </td>
+                    <td> 15 min </td>
+                </tr>
+                <tr class="bardzo-opozniony" >
+                    <td><a href="lot.html"> 372123 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 12:000 </td>
+                    <td> 2 godz </td>
+                </tr>
+                <tr class="odwolany" >
+                    <td><a href="lot.html"> 372123 </a> </td>
+                    <td> Warszawa </td>
+                    <td> Kraków </td>
+                    <td> 12:000 </td>
+                    <td> Odwołany </td>
+                </tr>
+            </table>
+
+            <h3> Zerezrwuj lot </h3>
+           <form>
+                <div>
+                    <label for="reserve-from"> Skad </label>
+                    <select id="reserve-from">
+                        <option value="Warszawa"> Warszawa </option>
+                    <select>
+                </div>
+                <div>
+                    <label for="reserve-to">Dokad</lable>
+                    <select id="reserve-to">
+                        <option value="Krakow"> Krakow </option>
+                    <select>
+                </div>
+                <div>
+                    <label for="reserve-when">Kiedy</label> 
+                    <select id="reserve-when">
+                        <option value="dzisiaj"> dzisiaj </option>
+                    </select>
+                </div>
+                <div>
+                    <label for="reserve-name"> Imie </lable>
+                    <input type="text" id="reserve-name">
+                </div>
+                <div>
+                   <label for="reserve-surname"> Nazwisko </label>
+                   <input type="text" id="reserve-surname"> 
+                </div>
+                <div>
+                   <input type="submit" value="Rezerwuj"> 
+                   <input type="submit" value="Wyczysc">
+                </div>
+           </form>
+        </aside>
+        <footer>
+        Footer 
+        </footer>
+    </div>
+    <div class="reserved">
+        <div>
+            Zarezerwowano pomyślnie!
+        </div>
+    </div>
+</body>
+</html>

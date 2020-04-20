@@ -1,5 +1,3 @@
-import {fib} from './fib'
-
 let submit_button = document.querySelector('input[value=Rezerwuj]') as HTMLInputElement;
 //submit_button.disabled = true;
 let clear_button = document.querySelector('input[value=Wyczysc]') as HTMLInputElement;
@@ -21,28 +19,18 @@ function wait(ms) {
     });
 }
 
-function teczoweKolory(el: HTMLElement) {
-    wait(1000)
-    .then(() => el.style.backgroundColor = 'red')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'orange')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'yellow')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'green')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'blue')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'indigo')
-    .then(() => wait(1000))
-    .then(() => el.style.backgroundColor = 'purple');
+async function teczoweKolory(el: HTMLElement) {
+    let colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple'];
+    for(const color of colors)
+    {
+        await wait(1000);
+        el.style.backgroundColor = color;
+    }
 }
 
-let loty = document.querySelector('table') as HTMLElement;
-
-teczoweKolory(loty);
-
-fetch('https://api.github.com/repos/Microsoft/TypeScript/commits')
+function fetchGithubPic()
+{
+    fetch('https://api.github.com/repos/Microsoft/TypeScript/commits')
     .then((request) => request.json())
     .then((data) => 
     {
@@ -51,8 +39,15 @@ fetch('https://api.github.com/repos/Microsoft/TypeScript/commits')
       let new_img = document.createElement('img');
       new_img.src = avatar_url;
       body.appendChild(new_img);
+    })
+    .catch(function() {
+        console.log("Failed to fetch github pic!");
     });
+}
 
+let loty = document.querySelector('table') as HTMLElement;
+
+teczoweKolory(loty);
 let opoznienia = document.querySelector('aside') as HTMLElement;
 let rezerwacja = document.querySelector('form') as HTMLElement;
 
@@ -64,6 +59,13 @@ function handleClick() {
 
     opoznienia.style.backgroundColor = new_color;
     rezerwacja.style.backgroundColor = new_color;
+
+    function fib(n)
+    {
+        if (n == 0) return 0;
+        if (n <= 2) return 1;
+        return fib(n-1) + fib(n-2);
+    }
 
     console.log("fib(10*i): " + fib(10*i));
     i++;
@@ -84,8 +86,14 @@ function handleFormInput() {
 name_input.addEventListener("input", handleFormInput);
 surname_input.addEventListener("input", handleFormInput);
 
-submit_button.addEventListener("click", function(){
-    alert("Zarezerwowano z "+from_input.value+" do "+to_input.value+". termin: "+when_input.value + " podrozny: " + name_input.value + " " + surname_input.value);
+let reserve_popup = document.querySelector('.reserved') as HTMLElement;
+let reserve_popup_h3 = document.querySelector('.reserved h3') as HTMLElement;
+let reserve_popup_button = document.querySelector('.reserved input') as HTMLElement;
+
+submit_button.addEventListener("click", function()
+{
+    reserve_popup_h3.innerHTML = "Zarezerwowano z "+from_input.value+" do "+to_input.value+". termin: "+when_input.value + " podrozny: " + name_input.value + " " + surname_input.value;
+    reserve_popup.style.display = 'grid';
 });
 
 clear_button.addEventListener("click", function(){
@@ -93,3 +101,11 @@ clear_button.addEventListener("click", function(){
     surname_input.value = "";
     handleFormInput();
 });
+
+
+reserve_popup_button.addEventListener("click", function()
+{
+    reserve_popup.style.display = "none";
+});
+
+fetchGithubPic();

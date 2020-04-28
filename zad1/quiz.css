@@ -9,6 +9,7 @@
     padding: 2rem;
     margin: 1rem;
     background: var(--dark);
+    font-size: 1.2rem;
 }
 
 #quiz-timer {
@@ -17,8 +18,8 @@
 }
 
 #quiz-question {
-    font-size: 2rem;
-    margin: 1rem;
+    font-size: 1.8rem;
+    margin: 1rem 0;
 }
 
 #quiz-question input {
@@ -30,10 +31,12 @@
 
     font-size: inherit;
     text-align: center;
+
+    border: 1px solid rgb(255, 255, 255, 0.3);
 }
 
 #quiz-question input:invalid {
-    border: none;
+    border: 1px solid rgb(127, 0, 0);
 }
 
 #quiz-prev, #quiz-next {

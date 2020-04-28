@@ -46,3 +46,11 @@
 #leaderboard table th {
     padding: 0.5rem 1rem;
 }
+
+/* Phone version */
+@media only screen and (max-width: 70rem)
+{
+    #leaderboard table th:nth-child(n+3), #leaderboard table td:nth-child(n+3) {
+        display: none;
+    }
+}

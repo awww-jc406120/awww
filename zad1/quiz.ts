@@ -153,10 +153,11 @@ function start_quiz()
     let quiz_string: string = 
     `{
         "tasks": [
-            {"question": "2 * 2 + 2", "answer": 6, "penalty": 6},
+            {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
+            {"question": "8 + 8 / 2 * 4", "answer": 24, "penalty": 6},
             {"question": "8 - (2 - 4) / 2", "answer": 9, "penalty": 7},
             {"question": "7 * (3 / 7 + 3)", "answer": 24, "penalty": 8},
-            {"question": "(13 - 7) * 5 - 6 * 2 + 1", "answer": 19, "penalty": 9}
+            {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
         ]
      }`;
     
@@ -201,7 +202,7 @@ function load_results()
 
     results_answer_table.innerHTML = "";
 
-    let answers_html: string = "<th> Task </th> <th> Answer </th> <th> Time </th> <th> Correct answer </th> <th> Penalty </th> </tr>";
+    let answers_html: string = "<th> Task </th> <th> Answer </th> <th> Time </th> <th> Correct </th> <th> Penalty </th> </tr>";
 
     for(let i: number = 0; i < current_quiz.tasks.length; i++)
     {
@@ -234,7 +235,7 @@ function load_results()
 
     results_answer_table.innerHTML = answers_html;
 
-    result_time.innerHTML = "Result: " + millis_as_string(quiz_time);
+    result_time.innerHTML = millis_as_string(quiz_time);
     choose_view('results');
 }
 
@@ -307,7 +308,7 @@ function millis_as_string(time_in_ms: number): string
 
 function update_timer()
 {
-    quiz_timer.innerHTML = "Your time: " + millis_as_string(get_time_since(quiz_start_time));
+    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_since(quiz_start_time));
 }
 
 function run_timer()
@@ -321,3 +322,14 @@ load_start_view();
 
 // Run timer
 run_timer();
+
+
+/*
+start_quiz();
+quiz_answers.set(0, 1);
+quiz_answers.set(1, 1);
+quiz_answers.set(2, 1);
+quiz_answers.set(3, 1);
+quiz_answers.set(4, 1);
+load_results();
+*/

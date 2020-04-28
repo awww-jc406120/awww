@@ -161,7 +161,7 @@ function load_results() {
         }
         else {
             cur_row_html = '<tr class="good-answer">' + cur_row_html;
-            cur_row_html += "<td>-</td><td>-</td>";
+            cur_row_html += "<td> yes </td><td>-</td>";
         }
         cur_row_html += "</tr>";
         answers_html += cur_row_html;
@@ -169,6 +169,7 @@ function load_results() {
     results_answer_table.innerHTML = answers_html;
     result_time.innerHTML = millis_as_string(quiz_time);
     choose_view('results');
+    window.scrollTo(0, 0);
 }
 function save_results(save_stats) {
     var result = new QuizResult();

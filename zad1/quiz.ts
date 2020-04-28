@@ -224,7 +224,7 @@ function load_results()
 
             quiz_time += cur_task.penalty * 1000;
             cur_row_html += "<td>" + cur_task.answer + "</td>";
-            cur_row_html += "<td>" + cur_task.penalty + "s </td>";
+            cur_row_html += "<td>+" + cur_task.penalty + "s </td>";
         }
         else
         {

@@ -52,7 +52,8 @@ let quiz_view = document.getElementById('quiz-view');
 let results_view = document.getElementById('results-view');
 
 let start_button: HTMLElement = document.getElementById("start-button");
-let start_leaderboard: HTMLElement = document.querySelector("#leaderboard table");
+let start_leaderboard: HTMLElement = document.getElementById("leaderboard");
+let start_leaderboard_table: HTMLElement = document.querySelector("#leaderboard table");
 
 let quiz_question_num: HTMLElement = document.getElementById("quiz-question-num");
 let quiz_question_text: HTMLElement = document.getElementById("quiz-question-text");
@@ -102,11 +103,14 @@ function load_start_view()
     quiz_answers = null;
 
     // Create leaderboard
-    start_leaderboard.innerHTML = "";
-    
     let results: QuizResult[] = get_leaderboard_results();
     results = results.sort((res1, res2) => res1.time_in_ms - res2.time_in_ms);
 
+    if(results.length == 0)
+    {
+        start_leaderboard.style.display = 'none';
+        return;
+    }
     
     let leaderboard_html: string = "<tr> <th> Rank </th> <th> Time </th>";
     
@@ -116,7 +120,6 @@ function load_start_view()
 
     for(let i: number = 0; i < max_stats_len; i++)
     leaderboard_html += "<th> Task " + (i+1) + "</th>";
-
     leaderboard_html += "</tr>"
 
     
@@ -143,7 +146,8 @@ function load_start_view()
         leaderboard_html += "</tr>";
     }
 
-    start_leaderboard.innerHTML = leaderboard_html;
+    start_leaderboard_table.innerHTML = leaderboard_html;
+    start_leaderboard.style.display = "inline-block";
 }
 
 function start_quiz()
@@ -199,8 +203,6 @@ function load_results()
 {
     answer_times[current_question] += get_time_since(cur_question_start_time);
     quiz_time = get_time_since(quiz_start_time);
-
-    results_answer_table.innerHTML = "";
 
     let answers_html: string = "<th> Task </th> <th> Answer </th> <th> Time </th> <th> Correct </th> <th> Penalty </th> </tr>";
 

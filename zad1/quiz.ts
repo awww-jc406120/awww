@@ -13,7 +13,6 @@ class Quiz
 
 function get_quiz_from_json(quiz_json: JSON): Quiz
 {
-    // TODO - add some actual parsing/checking here
     return <Quiz>(quiz_json as any);
 }
 
@@ -23,12 +22,13 @@ class QuizResult
     public stats: number[];
 }
 
+let localstorage_results_key: string = "super cool math quiz results id jc406120";
 function get_leaderboard_results(): QuizResult[]
 {
-    if(window.localStorage.getItem('math quiz results') === null)
+    if(window.localStorage.getItem(localstorage_results_key) === null)
         return [];
 
-    let results_json: JSON = JSON.parse(window.localStorage.getItem('math quiz results'));
+    let results_json: JSON = JSON.parse(window.localStorage.getItem(localstorage_results_key));
 
     let results: QuizResult[] = <QuizResult[]>(results_json as any);
     for(var result of results)
@@ -43,7 +43,7 @@ function add_leaderboard_result(result: QuizResult)
     let results: QuizResult[] = get_leaderboard_results();
     results.push(result);
 
-    window.localStorage.setItem('math quiz results', JSON.stringify(results));
+    window.localStorage.setItem(localstorage_results_key, JSON.stringify(results));
 }
 
 /* Html elements */
@@ -81,8 +81,8 @@ let answer_times: number[];
 let current_question: number;
 
 let quiz_start_time: Date = new Date();
-let cur_question_start_time;
-let quiz_time = null;
+let cur_question_start_time: Date;
+let quiz_time: number = null;
 
 /* Code */
 function choose_view(view_name: string)
@@ -119,10 +119,10 @@ function load_start_view()
         max_stats_len = Math.max(max_stats_len, result.stats.length);
 
     for(let i: number = 0; i < max_stats_len; i++)
-    leaderboard_html += "<th> Task " + (i+1) + "</th>";
+        leaderboard_html += "<th> Task " + (i+1) + "</th>";
+
     leaderboard_html += "</tr>"
 
-    
     for(let i:number = 0; i < results.length; i++)
     {
         leaderboard_html += "<tr> <td> " + (i+1) + "</td>";
@@ -324,14 +324,3 @@ load_start_view();
 
 // Run timer
 run_timer();
-
-
-/*
-start_quiz();
-quiz_answers.set(0, 1);
-quiz_answers.set(1, 1);
-quiz_answers.set(2, 1);
-quiz_answers.set(3, 1);
-quiz_answers.set(4, 1);
-load_results();
-*/

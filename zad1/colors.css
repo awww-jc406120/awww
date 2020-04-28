@@ -1,3 +1,4 @@
+/* Colors shared by all elements for style consistency */
 :root {
     --dark: rgb(29, 26, 26);
     --darkish: rgb(43, 47, 49);

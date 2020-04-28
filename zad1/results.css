@@ -1,0 +1,39 @@
+#results-view {
+    text-align: center;
+}
+
+#result-time {
+    font-size: 2.5rem;
+    margin: 1rem;
+    margin-top: 5rem;
+}
+
+#answer-summary {
+    display: inline-block;
+}
+
+#answer-summary table {
+    text-align: center;
+    border-collapse:separate; 
+    border-spacing: 0 0.3rem;
+}
+
+#answer-summary tr{
+    border: 1rem solid red;
+}
+
+#answer-summary tr td:nth-child(2), #answer-summary tr th:nth-child(2) {
+    text-align: left;
+}
+
+#answer-summary table th, #answer-summary table td {
+    padding: 0.5rem;
+}
+
+.good-answer{
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.bad-answer{
+    background: rgba(255, 0, 0, 0.2);
+}

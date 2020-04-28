@@ -1,0 +1,64 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Math quiz</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="start.css">
+    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="results.css">
+</head>
+
+<body>
+    <div id="start-view">
+        <button id="start-button"> <h1> Start Math Quiz! </h1> </button>
+
+        <div id="leaderboard">
+            <h2> Leaderboard: </h2>
+            <table cellspacing="0">
+
+            </table>
+        </div>
+    </div>
+
+    <div id="quiz-view">
+        <div id="quiz-introduction">
+            Here is some nice introduction text that explains why this quiz is important and fun
+        </div>
+        <h2 id="quiz-question-num">
+            3/23
+        </h2>
+        <div id="quiz-timer">
+            Your time: 0s
+        </div>
+        <div id="quiz-question-penalty">
+            Bad answer: +10s
+        </div>
+        <div id="quiz-question">
+            <span id="quiz-question-text"> 2 + 2 = </span>
+            <input type="text" placeholder="?" pattern="0|-[1-9][0-9]*|[1-9][0-9]*" required>
+            <!-- <button id="quiz-question-answer"> Ok </button> -->
+        </div>
+        <button id="quiz-prev" class="dark-button"> &lt </button>
+        <button id="quiz-next" class="dark-button"> &gt </button> <div></div>
+        <button id="quiz-finish" class="dark-button"> Finish </button>
+        <button id="quiz-cancel" class="dark-button"> Cancel </button>
+    </div>
+
+    <div id="results-view">
+        <div id="result-time"> Result: 45s </div>
+        <div id="answer-summary">
+            <h3> Answers: </h3>
+            <table cellspacing="0">
+            </table>
+        </div>
+        <div></div>
+        <button id="results-save" class="dark-button"> Save result </button>
+        <button id="results-save-stats" class="dark-button"> Save result with stats </button>
+    </div>
+
+    <script src="quiz.js"></script>
+</body>
+</html>

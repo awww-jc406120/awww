@@ -128,8 +128,9 @@ function start_quiz() {
     load_quiz_question(0);
 }
 function load_quiz_question(question_num) {
-    answer_times[current_question] += get_time_since(cur_question_start_time);
-    cur_question_start_time = new Date();
+    var load_time = new Date();
+    answer_times[current_question] += get_time_between(cur_question_start_time, load_time);
+    cur_question_start_time = load_time;
     current_question = question_num;
     var cur_question = current_quiz.tasks[question_num];
     var quiz_size = current_quiz.tasks.length;
@@ -142,8 +143,9 @@ function load_quiz_question(question_num) {
         quiz_answer_input.value = "";
 }
 function load_results() {
-    answer_times[current_question] += get_time_since(cur_question_start_time);
-    quiz_time = get_time_since(quiz_start_time);
+    var end_time = new Date();
+    answer_times[current_question] += get_time_between(cur_question_start_time, end_time);
+    quiz_time = get_time_between(quiz_start_time, end_time);
     var answers_html = "<th> Task </th> <th> Answer </th> <th> Time </th> <th> Correct </th> <th> Penalty </th> </tr>";
     for (var i = 0; i < current_quiz.tasks.length; i++) {
         var cur_row_html = "<td>" + (i + 1) + "</td>";
@@ -197,9 +199,8 @@ quiz_answer_input.addEventListener('input', function () {
 results_save_button.addEventListener('click', function () { save_results(false); });
 results_save_stats_button.addEventListener('click', function () { save_results(true); });
 // Timer code
-function get_time_since(since_date) {
-    var cur_time = new Date();
-    var time_in_ms = cur_time.getTime() - since_date.getTime();
+function get_time_between(from_date, to_date) {
+    var time_in_ms = to_date.getTime() - from_date.getTime();
     return time_in_ms;
 }
 function millis_as_string(time_in_ms) {
@@ -214,7 +215,7 @@ function millis_as_string(time_in_ms) {
     return result;
 }
 function update_timer() {
-    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_since(quiz_start_time));
+    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_between(quiz_start_time, new Date()));
 }
 function run_timer() {
     update_timer();

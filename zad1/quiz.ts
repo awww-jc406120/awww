@@ -181,8 +181,9 @@ function start_quiz()
 
 function load_quiz_question(question_num: number)
 {
-    answer_times[current_question] += get_time_since(cur_question_start_time);
-    cur_question_start_time = new Date();
+    let load_time: Date = new Date();
+    answer_times[current_question] += get_time_between(cur_question_start_time, load_time);
+    cur_question_start_time = load_time;
 
     current_question = question_num;
 
@@ -201,8 +202,9 @@ function load_quiz_question(question_num: number)
 
 function load_results()
 {
-    answer_times[current_question] += get_time_since(cur_question_start_time);
-    quiz_time = get_time_since(quiz_start_time);
+    let end_time: Date = new Date();
+    answer_times[current_question] += get_time_between(cur_question_start_time, end_time);
+    quiz_time = get_time_between(quiz_start_time, end_time);
 
     let answers_html: string = "<th> Task </th> <th> Answer </th> <th> Time </th> <th> Correct </th> <th> Penalty </th> </tr>";
 
@@ -285,10 +287,9 @@ results_save_button.addEventListener('click', function(){ save_results(false); }
 results_save_stats_button.addEventListener('click', function(){ save_results(true); });
 
 // Timer code
-function get_time_since(since_date: Date): number
+function get_time_between(from_date: Date, to_date: Date): number
 {
-    let cur_time: Date = new Date();
-    let time_in_ms: number = cur_time.getTime() - since_date.getTime();
+    let time_in_ms: number = to_date.getTime() - from_date.getTime();
     return time_in_ms;
 }
 
@@ -310,7 +311,7 @@ function millis_as_string(time_in_ms: number): string
 
 function update_timer()
 {
-    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_since(quiz_start_time));
+    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_between(quiz_start_time, new Date()));
 }
 
 function run_timer()

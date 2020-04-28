@@ -157,7 +157,7 @@ function load_results() {
             cur_row_html = '<tr class="bad-answer">' + cur_row_html;
             quiz_time += cur_task.penalty * 1000;
             cur_row_html += "<td>" + cur_task.answer + "</td>";
-            cur_row_html += "<td>" + cur_task.penalty + "s </td>";
+            cur_row_html += "<td>+" + cur_task.penalty + "s </td>";
         }
         else {
             cur_row_html = '<tr class="good-answer">' + cur_row_html;

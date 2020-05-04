@@ -27,7 +27,7 @@ class QuizResult
 function get_localstorage_results_key(quiz_id: number): string
 {
     let results_key_base: string = "super cool math quiz results id jc406120";
-    return results_key_base + "quiz_id: " + Number;
+    return results_key_base + "quiz_id: " + quiz_id;
 }
 
 let last_quiz_id: number = 0;

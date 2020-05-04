@@ -19,7 +19,7 @@ var QuizResult = /** @class */ (function () {
 }());
 function get_localstorage_results_key(quiz_id) {
     var results_key_base = "super cool math quiz results id jc406120";
-    return results_key_base + "quiz_id: " + Number;
+    return results_key_base + "quiz_id: " + quiz_id;
 }
 var last_quiz_id = 0;
 function get_leaderboard_results() {

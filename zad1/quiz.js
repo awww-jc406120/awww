@@ -27,6 +27,8 @@ function get_leaderboard_results() {
         var result = results_1[_i];
         if (result.stats === undefined)
             result.stats = [];
+        if (result.quiz_id === undefined)
+            result.quiz_id = -1;
     }
     return results;
 }
@@ -115,7 +117,7 @@ function load_start_view() {
 }
 function start_quiz() {
     choose_view('quiz');
-    var quiz_string = "{\n        \"tasks\": [\n            {\"question\": \"2 + 2 * 2\", \"answer\": 6, \"penalty\": 5},\n            {\"question\": \"8 + 8 / 2 * 4\", \"answer\": 24, \"penalty\": 6},\n            {\"question\": \"8 - (2 - 4) / 2\", \"answer\": 9, \"penalty\": 7},\n            {\"question\": \"7 * (3 / 7 + 3)\", \"answer\": 24, \"penalty\": 8},\n            {\"question\": \"9 / 2 - 10 / 4\", \"answer\": 2, \"penalty\": 9}\n        ]\n     }";
+    var quiz_string = "{\n        \"id\": 0,\n        \"tasks\": [\n            {\"question\": \"2 + 2 * 2\", \"answer\": 6, \"penalty\": 5},\n            {\"question\": \"8 + 8 / 2 * 4\", \"answer\": 24, \"penalty\": 6},\n            {\"question\": \"8 - (2 - 4) / 2\", \"answer\": 9, \"penalty\": 7},\n            {\"question\": \"7 * (3 / 7 + 3)\", \"answer\": 24, \"penalty\": 8},\n            {\"question\": \"9 / 2 - 10 / 4\", \"answer\": 2, \"penalty\": 9}\n        ]\n     }";
     var quiz = get_quiz_from_json(JSON.parse(quiz_string));
     current_quiz = quiz;
     quiz_answers = new Map();
@@ -174,6 +176,7 @@ function load_results() {
 function save_results(save_stats) {
     var result = new QuizResult();
     result.time_in_ms = quiz_time;
+    result.quiz_id = current_quiz.id;
     if (save_stats)
         result.stats = answer_times;
     add_leaderboard_result(result);

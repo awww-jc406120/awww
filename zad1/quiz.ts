@@ -8,6 +8,7 @@ class QuizTask
 
 class Quiz
 {
+    public id: number;
     public tasks: QuizTask[];
 }
 
@@ -20,6 +21,7 @@ class QuizResult
 {
     public time_in_ms: number;
     public stats: number[];
+    public quiz_id: number;
 }
 
 let localstorage_results_key: string = "super cool math quiz results id jc406120";
@@ -32,8 +34,13 @@ function get_leaderboard_results(): QuizResult[]
 
     let results: QuizResult[] = <QuizResult[]>(results_json as any);
     for(var result of results)
+    {
         if(result.stats === undefined)
             result.stats = [];
+
+        if(result.quiz_id === undefined)
+            result.quiz_id = -1;
+    }
 
     return results;
 }
@@ -156,6 +163,7 @@ function start_quiz()
 
     let quiz_string: string = 
     `{
+        "id": 0,
         "tasks": [
             {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
             {"question": "8 + 8 / 2 * 4", "answer": 24, "penalty": 6},
@@ -248,6 +256,7 @@ function save_results(save_stats: boolean)
 {
     let result = new QuizResult();
     result.time_in_ms = quiz_time;
+    result.quiz_id = current_quiz.id;
 
     if(save_stats)
         result.stats = answer_times;

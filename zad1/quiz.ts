@@ -24,13 +24,22 @@ class QuizResult
     public quiz_id: number;
 }
 
-let localstorage_results_key: string = "super cool math quiz results id jc406120";
+function get_localstorage_results_key(quiz_id: number): string
+{
+    let results_key_base: string = "super cool math quiz results id jc406120";
+    return results_key_base + "quiz_id: " + Number;
+}
+
+let last_quiz_id: number = 0;
+
 function get_leaderboard_results(): QuizResult[]
 {
-    if(window.localStorage.getItem(localstorage_results_key) === null)
+    let localstorage_key: string = get_localstorage_results_key(last_quiz_id);
+
+    if(window.localStorage.getItem(localstorage_key) === null)
         return [];
 
-    let results_json: JSON = JSON.parse(window.localStorage.getItem(localstorage_results_key));
+    let results_json: JSON = JSON.parse(window.localStorage.getItem(localstorage_key));
 
     let results: QuizResult[] = <QuizResult[]>(results_json as any);
     for(var result of results)
@@ -49,8 +58,9 @@ function add_leaderboard_result(result: QuizResult)
 {
     let results: QuizResult[] = get_leaderboard_results();
     results.push(result);
-
-    window.localStorage.setItem(localstorage_results_key, JSON.stringify(results));
+    
+    let localstorage_key: string = get_localstorage_results_key(current_quiz.id);
+    window.localStorage.setItem(localstorage_key, JSON.stringify(results));
 }
 
 /* Html elements */
@@ -175,6 +185,8 @@ function start_quiz()
     
     let quiz: Quiz = get_quiz_from_json(JSON.parse(quiz_string));
     current_quiz = quiz;
+    last_quiz_id = current_quiz.id;
+
     quiz_answers = new Map();
     quiz_start_time = new Date();
     answer_times = new Array<number>(current_quiz.tasks.length).fill(0);

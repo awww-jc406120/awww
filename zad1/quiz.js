@@ -17,11 +17,16 @@ var QuizResult = /** @class */ (function () {
     }
     return QuizResult;
 }());
-var localstorage_results_key = "super cool math quiz results id jc406120";
+function get_localstorage_results_key(quiz_id) {
+    var results_key_base = "super cool math quiz results id jc406120";
+    return results_key_base + "quiz_id: " + Number;
+}
+var last_quiz_id = 0;
 function get_leaderboard_results() {
-    if (window.localStorage.getItem(localstorage_results_key) === null)
+    var localstorage_key = get_localstorage_results_key(last_quiz_id);
+    if (window.localStorage.getItem(localstorage_key) === null)
         return [];
-    var results_json = JSON.parse(window.localStorage.getItem(localstorage_results_key));
+    var results_json = JSON.parse(window.localStorage.getItem(localstorage_key));
     var results = results_json;
     for (var _i = 0, results_1 = results; _i < results_1.length; _i++) {
         var result = results_1[_i];
@@ -35,7 +40,8 @@ function get_leaderboard_results() {
 function add_leaderboard_result(result) {
     var results = get_leaderboard_results();
     results.push(result);
-    window.localStorage.setItem(localstorage_results_key, JSON.stringify(results));
+    var localstorage_key = get_localstorage_results_key(current_quiz.id);
+    window.localStorage.setItem(localstorage_key, JSON.stringify(results));
 }
 /* Html elements */
 var start_view = document.getElementById('start-view');
@@ -120,6 +126,7 @@ function start_quiz() {
     var quiz_string = "{\n        \"id\": 0,\n        \"tasks\": [\n            {\"question\": \"2 + 2 * 2\", \"answer\": 6, \"penalty\": 5},\n            {\"question\": \"8 + 8 / 2 * 4\", \"answer\": 24, \"penalty\": 6},\n            {\"question\": \"8 - (2 - 4) / 2\", \"answer\": 9, \"penalty\": 7},\n            {\"question\": \"7 * (3 / 7 + 3)\", \"answer\": 24, \"penalty\": 8},\n            {\"question\": \"9 / 2 - 10 / 4\", \"answer\": 2, \"penalty\": 9}\n        ]\n     }";
     var quiz = get_quiz_from_json(JSON.parse(quiz_string));
     current_quiz = quiz;
+    last_quiz_id = current_quiz.id;
     quiz_answers = new Map();
     quiz_start_time = new Date();
     answer_times = new Array(current_quiz.tasks.length).fill(0);

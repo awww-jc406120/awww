@@ -18,7 +18,7 @@ html
             table(cellspacing = "0")
                 tr
                     th Past prices
-                each price in meme.prices
+                each price in meme.prices.slice().reverse()
                     tr
                         td
                             span=price

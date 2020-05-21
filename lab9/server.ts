@@ -28,6 +28,12 @@ let memes_list =
 [
     new Meme({
         id: 0,
+        name: 'Beautiful',
+        url: 'https://preview.redd.it/p6wbma2a0yz41.jpg?width=960&crop=smart&auto=webp&s=d375ad7754b80dd73c63b35cad42a88c8bf9ef22',
+        prices: [10]
+    }),
+    new Meme({
+        id: 1,
         name: 'Gold',
         url: 'https://i.redd.it/h7rplf9jt8y21.png',
         prices: [1000]
@@ -43,6 +49,12 @@ let memes_list =
         name: 'Elite',
         url: 'https://i.imgflip.com/30zz5g.jpg',
         prices: [1200]
+    }),
+    new Meme({
+        id: 3,
+        name: 'Help',
+        url: 'https://i.redd.it/at0t2f1ub4051.jpg',
+        prices: [1300]
     })
 ]
 
@@ -64,7 +76,7 @@ function get_meme(meme_id: number): Meme
 
 // Main site with memes
 app.get('/', function (req, res) {
-    res.render('index', { beautiful_memes: memes_list.slice(0, 1), memes: memes_list })
+    res.render('index', { beautiful_memes: [get_meme(0)], memes: memes_list })
 })
 
 // Show single meme with details

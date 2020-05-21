@@ -1,0 +1,16 @@
+html
+    head
+        title
+            Mim meme market
+    style
+        include style.css
+    body
+        h1
+            span(class="rainbow-text") Mim meme market
+        h2= "Today's beautiful meme:"
+        each meme in beautiful_memes
+            include single_meme.pug
+        
+        h2="Top memes"
+        each meme in memes
+                include single_meme.pug

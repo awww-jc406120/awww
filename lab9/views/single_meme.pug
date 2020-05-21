@@ -1,0 +1,5 @@
+div
+    a(href="/meme/" + meme.id)
+        div(class="meme")
+            h3=meme.name + " (Price: " + meme.get_price() + ")"
+            img(src=meme.url class="meme")

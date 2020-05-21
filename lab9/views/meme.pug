@@ -1,0 +1,24 @@
+html
+    head
+        title= "meme"
+    style
+        include style.css
+    body
+        div(class = "back-button")
+            a(href="/" class="back-button") Back
+
+        include single_meme.pug
+
+        form(action="/meme/" + meme.id method="POST")
+            p New price:
+            input(type="text" name="price" placeholder="1000")
+            input(type="submit" value="Submit")
+
+        div
+            table(cellspacing = "0")
+                tr
+                    th Past prices
+                each price in meme.prices
+                    tr
+                        td
+                            span=price

@@ -27,36 +27,35 @@ class Meme
 let memes_list = 
 [
     new Meme({
-        id: 0,
         name: 'Beautiful',
         url: 'https://preview.redd.it/p6wbma2a0yz41.jpg?width=960&crop=smart&auto=webp&s=d375ad7754b80dd73c63b35cad42a88c8bf9ef22',
         prices: [10]
     }),
     new Meme({
-        id: 1,
         name: 'Gold',
         url: 'https://i.redd.it/h7rplf9jt8y21.png',
         prices: [1000]
     }),
     new Meme({
-        id: 1,
         name: 'Platinum',
         url: 'http://www.quickmeme.com/img/90/90d3d6f6d527a64001b79f4e13bc61912842d4a5876d17c1f011ee519d69b469.jpg',
         prices: [1100]
     }),
     new Meme({
-        id: 2,
         name: 'Elite',
         url: 'https://i.imgflip.com/30zz5g.jpg',
         prices: [1200]
     }),
     new Meme({
-        id: 3,
         name: 'Help',
         url: 'https://i.redd.it/at0t2f1ub4051.jpg',
         prices: [1300]
     })
 ]
+
+for(let id: number = 0; id < memes_list.length; id++) {
+    memes_list[id].id = id;
+}
 
 function sort_memes()
 {

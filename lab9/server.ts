@@ -1,4 +1,5 @@
 import express = require('express')
+
 const app = express()
 app.set('view engine', 'pug')
 app.use(express.urlencoded({extended: true})); 
@@ -24,7 +25,46 @@ class Meme
     }
 }
 
-let memes_list = 
+class MemeList
+{
+    meme_list: Meme[];
+    meme_map: Map<number, Meme>;
+    public constructor(meme_list: Meme[]) {
+        this.meme_list = meme_list;
+        this.meme_map = new Map();
+
+        let cur_id: number = 0;
+        for(let meme of meme_list) {
+            meme.id = cur_id;
+            this.meme_map.set(meme.id, meme);
+            cur_id++;
+        }
+
+        this.sort();
+    }
+
+    public get_meme(meme_id: number) {
+        if(!this.meme_map.has(Math.floor(meme_id))) {
+            throw new Error("No meme with such id!");
+        }
+
+        return this.meme_map.get(Math.floor(meme_id));
+    }
+
+    public sort() {
+        this.meme_list.sort((meme1, meme2) => meme2.get_price() - meme1.get_price());
+    }
+
+    public get_list(): Meme[] {
+        return this.meme_list
+    }
+
+    public get_beautiful_meme(): Meme {
+        return this.get_meme(0);
+    }
+}
+
+let meme_list = new MemeList(
 [
     new Meme({
         name: 'Beautiful',
@@ -51,49 +91,39 @@ let memes_list =
         url: 'https://i.redd.it/at0t2f1ub4051.jpg',
         prices: [1300]
     })
-]
-
-for(let id: number = 0; id < memes_list.length; id++) {
-    memes_list[id].id = id;
-}
-
-function sort_memes()
-{
-    memes_list.sort((meme1, meme2) => meme2.get_price() - meme1.get_price());
-}
-
-function get_meme(meme_id: number): Meme
-{
-    for(var meme of memes_list)
-    {
-        if(meme.id == meme_id)
-            return meme;
-    }
-
-    return memes_list[0];
-}
+]);
 
 // Main site with memes
 app.get('/', function (req, res) {
-    res.render('index', { beautiful_memes: [get_meme(0)], memes: memes_list })
+    res.render('index', { beautiful_memes: [meme_list.get_beautiful_meme()], memes: meme_list.get_list() })
 })
 
 // Show single meme with details
 app.get('/meme/:memeId', function (req, res) {
-    let meme = get_meme(req.params.memeId);
-    res.render('meme', { meme: meme })
+    try {
+        let meme = meme_list.get_meme(req.params.memeId);
+        res.render('meme', { meme: meme })
+    }
+    catch(e) {
+        res.render('404', {});
+        return;
+    }
  })
 
 // Change meme price
 app.post('/meme/:memeId', function (req, res) {
-    let meme = get_meme(req.params.memeId);
-    let price = req.body.price;
-    meme.change_price(price);
-    sort_memes();
-    res.render('meme', { meme: meme })
+    try {
+        let meme = meme_list.get_meme(req.params.memeId);
+        let price = req.body.price;
+        meme.change_price(price);
+        meme_list.sort();
+        res.render('meme', { meme: meme })
+    }
+    catch(e) {
+        res.render('404', {});
+        return;
+    }
 })
-
-sort_memes();
 
 console.log("Server is running!");
 app.listen(server_port);

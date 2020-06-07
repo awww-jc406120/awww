@@ -1,0 +1,79 @@
+body {
+    text-align: center;
+    background: dimgrey ;
+    color:  #111111;
+    margin: 0;
+    padding: 0;
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+h1 {
+    background: darkcyan;
+    padding: 1rem;
+}
+
+a {
+    color: inherit; /* blue colors for links too */
+    text-decoration: inherit; /* no underline */
+}
+
+.meme img{
+    max-width: 30rem;
+    max-width: 30rem;
+    border: none;
+    box-shadow: none;
+}
+
+.meme {
+    text-decoration: bold;
+    font-size: 1.3rem;
+    border: 1px solid black;
+    display: inline-block;
+    margin: 0.5rem;
+    padding: 0.3rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);;
+    background: dodgerblue
+}
+
+.rainbow-text {
+    background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    color: rgba(0, 0, 0, 0);
+}
+
+.back-button {
+    text-align: left;
+    font-size: 2rem;
+}
+
+.back-button a {
+    margin: 0.5rem;
+}
+
+table {
+    display: inline-block;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table th {
+    font-size: 1.5rem;
+}
+
+table td {
+    font-size: 1.1rem;
+}
+
+table th, td {
+    padding: 0.3rem;
+}
+
+table tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.25);
+}

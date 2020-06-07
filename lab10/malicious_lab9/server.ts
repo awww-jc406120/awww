@@ -1,5 +1,4 @@
-import express = require('express')
-import path = require('path')
+import express = require('express') 
 
 const app = express()
 app.set('view engine', 'pug')

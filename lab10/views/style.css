@@ -68,6 +68,19 @@ a {
     padding: 1rem;
 }
 
+.big-font {
+    font-size: 2rem;
+}
+
+.view-counter {
+    font-size: 2rem;
+    position: fixed;
+    font-size: 2rem;
+    bottom: 0;
+    right: 0;
+    padding: 1rem;
+}
+
 table {
     display: inline-block;
 }

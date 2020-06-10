@@ -5,6 +5,7 @@ html
         include style.css
     body
         include topbar
+        include viewcounter
         h2= "Today's beautiful meme:"
         each meme in beautiful_memes
             include single_meme.pug

@@ -44,10 +44,28 @@ a {
 .back-button {
     text-align: left;
     font-size: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1rem;
 }
 
-.back-button a {
-    margin: 0.5rem;
+.login-button {
+    position: absolute;
+    font-size: 2rem;
+    text-align: right;;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+}
+
+.username {
+    font-size: 2rem;
+    position: absolute;
+    font-size: 2rem;
+    top: 0;
+    right: 9rem;
+    padding: 1rem;
 }
 
 table {

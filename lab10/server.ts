@@ -74,7 +74,6 @@ function get_meme_by_id(meme_id: number, callback: ((_: Meme) => void) )
 function get_meme_price_history(meme_id: number, callback: ((_: [number, String][]) => void))
 {
     let result: [number, String][] = null;
-    console.log("looking for " + meme_id);
 
     meme_db.all("SELECT price, setter_username FROM meme_prices WHERE meme_id = ? ORDER BY set_date DESC", meme_id, (err, rows) => {
         
@@ -102,7 +101,6 @@ function get_all_memes(callback: ((_: Meme[]) => void))
                 url: row.url,
                 cur_price: row.price
             }));
-            console.log(row.price)
         }
 
         callback(result);
@@ -148,10 +146,6 @@ init_db([
     })
 ]);
 
-get_meme_by_id(0, (meme: Meme) => {
-    console.log('Found meme: ' + meme.cur_price)
-});
-
 // Main site with memes
 app.get('/', function (req, res) {
 
@@ -164,7 +158,7 @@ app.get('/', function (req, res) {
                 beautiful_meme = meme;
         }
 
-        res.render('index', { beautiful_memes: [beautiful_meme], memes: memes })
+        res.render('index', { beautiful_memes: [beautiful_meme], memes: memes, username: req.session.username, csrfToken: req.csrfToken()})
     })
 })
 
@@ -183,7 +177,10 @@ app.get('/meme/:memeId', function (req, res)
         else
         {
             get_meme_price_history(meme.id, (meme_prices: [number, String][]) => {
-                res.render('meme', { meme: meme, meme_prices: meme_prices, csrfToken: req.csrfToken() , views: req.session.views})
+                res.render('meme', { meme: meme, meme_prices: meme_prices, 
+                                     csrfToken: req.csrfToken(), 
+                                     views: req.session.views, 
+                                     username: req.session.username})
             })
         }
     });
@@ -195,10 +192,59 @@ app.post('/meme/:memeId', function (req, res) {
     if(req.session.username)
     {
         set_new_meme_price(req.params.memeId, req.body.price, req.session.username);
-        res.render('/meme/' + req.session.memeId);
+        res.redirect(301, '/meme/' + req.params.memeId);
     }
     else
-        res.render('404', {});
+        res.redirect(301, '/login', {});
+})
+
+
+// Users
+class User
+{
+    username: string;
+    password: string;
+
+    public constructor(name: string, pass: string)
+    {
+        this.username = name;
+        this.password = pass;
+    }
+};
+
+
+let users: User[] = [
+    new User("admin", "admin"),
+    new User("user1", "pass1")
+];
+
+function verify_user(username: string, password: string): boolean 
+{
+    for(let user of users)
+        if(user.username === username && user.password == password)
+            return true;
+
+    return false;
+}
+
+app.get('/login', function (req, res) 
+{
+    res.render('login', {csrfToken: req.csrfToken()});
+});
+
+app.post('/login', function (req, res) {
+    if(verify_user(req.body.username, req.body.password))
+    {
+        req.session.username = req.body.username;
+        res.redirect(301, '/');
+    }
+    else
+        res.redirect(301, '/login');
+});
+
+app.get('/logout', function (req, res) {
+    req.session.username = null;
+    res.redirect(301, '/');
 })
 
 console.log("Server is running!");

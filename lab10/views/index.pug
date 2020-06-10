@@ -4,8 +4,7 @@ html
     style
         include style.css
     body
-        h1
-            span(class="rainbow-text") Mim meme market
+        include topbar
         h2= "Today's beautiful meme:"
         each meme in beautiful_memes
             include single_meme.pug

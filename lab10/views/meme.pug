@@ -4,6 +4,7 @@ html
     style
         include style.css
     body
+        include topbar
         p="Views:" + views
         div(class = "back-button")
             a(href="/" class="back-button") Back
@@ -20,7 +21,10 @@ html
             table(cellspacing = "0")
                 tr
                     th Past prices
+                    th User
                 each price in meme_prices
                     tr
                         td
                             span=price[0]
+                        td
+                            span=price[1]

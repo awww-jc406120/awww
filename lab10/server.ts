@@ -210,7 +210,7 @@ app.post('/meme/:memeId', function (req, res) {
         res.redirect(303, '/meme/' + req.params.memeId);
     }
     else
-        res.redirect(303, '/login', {});
+        res.redirect(303, '/login');
 })
 
 

@@ -8,7 +8,7 @@ db.serialize(() =>
     db.run("CREATE TABLE users (username TEXT PRIMARY KEY, password TEXT)");
     db.run("CREATE TABLE quizzes (quiz_id INTEGER PRIMARY KEY, quiz_json TEXT)");
     db.run("CREATE TABLE quiz_start_times (username TEXT, quiz_id INTEGER PRIMARY KEY, start_time INTEGER)");
-    db.run("CREATE TABLE quiz_answers (username TEXT, quiz_answers_json TEXT)");
+    db.run("CREATE TABLE quiz_answers (username TEXT, quiz_id INTEGER, quiz_answers_json TEXT)");
 
     // Add users
     db.run("INSERT INTO users VALUES ('user1', 'user1')");

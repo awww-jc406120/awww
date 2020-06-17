@@ -42,8 +42,8 @@
 /* Phone version */
 @media only screen and (max-width: 30rem)
 {
-    #answer-summary table th:nth-child(1), #answer-summary table td:nth-child(1),
-    #answer-summary table th:nth-child(3), #answer-summary table td:nth-child(3) {
+    #answer-summary table th:nth-child(3), #answer-summary table td:nth-child(3),
+    #answer-summary table th:nth-child(5), #answer-summary table td:nth-child(5) {
         display: none;
     }
 }

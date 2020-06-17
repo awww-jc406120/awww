@@ -92,9 +92,10 @@ function load_quiz_question(question_num: number)
 
 function submit_results()
 {
+    // Collect all answers
     let my_answers = new QuizAnswers();
     my_answers.answers = new Array<number>(current_quiz.tasks.length).fill(0);
-    my_answers.question_time_percentages = my_answers.answers = new Array<number>(current_quiz.tasks.length).fill(0);
+    my_answers.question_time_percentages = new Array<number>(current_quiz.tasks.length).fill(0);
 
     my_answers.question_time_percentages[0] = 1;
 
@@ -103,9 +104,17 @@ function submit_results()
         my_answers.answers[i] = quiz_answers.get(i);
     }
 
-    console.log("Submitting results!\n");
-
-    fetch('/quiz/' + current_quiz.id + "/answers");
+    // Send them to the server
+    fetch('/quiz/' + current_quiz.id + "/answers", {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(my_answers),
+    }).then(response => {
+        document.location.href = '/quiz/' + quiz_id + '/results';
+    });
 }
 
 quiz_next_button.addEventListener('click', function(){
@@ -118,7 +127,7 @@ quiz_prev_button.addEventListener('click', function(){
         load_quiz_question(current_question - 1);
 });
 
-quiz_cancel_button.addEventListener('click', () => {console.log("Yeah canceling xD")});
+quiz_cancel_button.addEventListener('click', () => {window.location.href = "/quizzes"; });
 
 quiz_finish_button.addEventListener('click', submit_results);
 
@@ -170,13 +179,10 @@ function run_timer()
 let quiz_id: number = Number(quiz_id_div.innerHTML);
 console.log("quiz_id: " + quiz_id);
 
-let received_data;
-
 fetch('/quiz/' + quiz_id + '/data')
 .then(response => response.json())
 .then(data =>
 {
-    received_data = data;
     current_quiz = get_quiz_from_json(data);
     start_quiz();
 });

@@ -1,0 +1,41 @@
+html
+    head
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        title= "Quizzer Quiz " + quiz_id + " results"
+        style
+            include main.css
+            include start.css
+            include quiz.css
+            include results.css
+
+    body
+        div(id="results-view")
+            div(class="result-time")
+                span= "Result: "
+                span(id="result-time")= total_time
+            
+            div(id="answer-summary")
+                h3 Answers:
+                table(cellspacing="0")
+                    tr
+                        th Task
+                        th Answer
+                        th Time
+                        th Correct
+                        th Penalty
+                    each result_data in results_data
+                        if result_data.answer_good
+                            tr(class="good-answer")
+                                td= result_data.task_text
+                                td= result_data.task_answer
+                                td= result_data.answer_time_percent + '%'
+                                td yes
+                                td -
+                        else
+                            tr(class="bad-answer")
+                                td= result_data.task_text
+                                td= result_data.task_answer
+                                td= result_data.answer_time_percent + '%'
+                                td= result_data.task_correct_answer
+                                td= result_data.penalty + 's'

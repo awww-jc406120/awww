@@ -6,10 +6,12 @@ import csurf = require('csurf');
 import sqlite3 = require('sqlite3');
 sqlite3.verbose();
 import { promisify } from 'util';
+import bodyParser = require('body-parser')
 
 const app = express()
 app.set('view engine', 'pug')
 app.use(express.urlencoded({extended: true})); 
+app.use(bodyParser.json())
 app.use(session({resave: false, 
                  saveUninitialized: true,
                  store: new SQLiteStore,
@@ -163,6 +165,19 @@ function get_user_answers_for_quiz(quiz_id: number, username: string): Promise<Q
     });
 }
 
+function set_user_answers_for_quiz(quiz_id: number, username: string, answers: QuizAnswers): Promise<void>
+{
+    return new Promise((resolve, reject) => 
+    {
+        db.run('INSERT INTO quiz_answers VALUES (?, ?, ?)', username, quiz_id, JSON.stringify(answers), (err) => {
+            if(err)
+                reject();
+            else
+                resolve();
+        });
+    });
+}
+
 app.get('/', (req, res) => {
     res.redirect(303, '/quizzes');
 });
@@ -261,15 +276,83 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 });
 
 // Frontend uses this post to submit quiz results
-app.post('/quiz/:quiz_id/answers', require_user_login, (req, res) =>
+app.post('/quiz/:quiz_id/answers', require_user_login, async (req, res) =>
 {
+    let quiz_id: number = req.params.quiz_id;
+    let username: string = req.session.username;
 
+    let quiz_answers: QuizAnswers = get_quiz_answers_from_json(req.body);
+
+    let quiz_submit_time: number = (new Date()).getTime();
+    let quiz_start_time: number = await get_quiz_start_time(quiz_id, username);
+
+    let quiz_time: number = quiz_submit_time - quiz_start_time;
+
+    if(await get_user_answers_for_quiz(quiz_id, username))
+    {
+        res.redirect(303, '/quiz/' + quiz_id + '/results');
+        return;
+    }
+
+    let quiz: Quiz = await get_quiz_by_id(quiz_id);
+
+    // Calculate results
+    quiz_answers.total_time_ms = quiz_time;
+    for(let i: number = 0; i < quiz.tasks.length; i++)
+        if(quiz_answers.answers[i] != quiz.tasks[i].answer)
+            quiz_answers.total_time_ms += quiz.tasks[i].penalty * 1000;
+
+    await set_user_answers_for_quiz(quiz_id, req.session.username, quiz_answers);
+
+    res.redirect(303, '/quiz/' + quiz_id + '/results');
 });
+
+function millis_as_string(time_in_ms: number): string
+{
+    let seconds: number = Math.floor(time_in_ms/1000) % 60;
+    let minutes: number = Math.floor(time_in_ms/1000/60) % 60;
+    let hours: number = Math.floor(time_in_ms/1000/60/60);
+
+    let result = seconds + "." + Math.floor((time_in_ms % 1000)/100) + "s";
+    if(minutes > 0)
+        result = minutes + "m " + result;
+
+    if(hours > 0)
+        result = hours + "h " + result;
+
+    return result;
+}
 
 // Shows page with quiz results
 app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) => 
 {
+    let quiz_id: number = req.params.quiz_id;
+    let username: string = req.session.username;
 
+    let quiz: Quiz = await get_quiz_by_id(quiz_id);
+    let answers: QuizAnswers = await get_user_answers_for_quiz(quiz_id, username);
+    if(answers === null)
+    {
+        res.redirect(303, '/quizzes');
+        return;
+    }
+
+    let results_data = [];
+    for(let i: number = 0; i < quiz.tasks.length; i++)
+    {
+        results_data.push({
+            answer_good: (answers.answers[i] == quiz.tasks[i].answer),
+            task_text: quiz.tasks[i].question,
+            task_answer: answers.answers[i],
+            task_correct_answer: quiz.tasks[i].answer,
+            answer_time_percent: answers.question_time_percentages[i],
+            penalty: quiz.tasks[i].penalty
+        });
+    }
+
+    res.render('results', {quiz_id: quiz_id, 
+                          total_time: millis_as_string(answers.total_time_ms),
+                          results_data: results_data});
 });
 
 app.use("/quiz.js", express.static('quiz.js'));

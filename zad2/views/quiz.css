@@ -1,0 +1,44 @@
+@import url("/colors.css");
+
+
+#quiz-view {
+    text-align: center;
+}
+
+#quiz-introduction {
+    padding: 2rem;
+    margin: 1rem;
+    background: var(--dark);
+    font-size: 1.2rem;
+}
+
+#quiz-timer {
+    font-size: 1.2rem;
+    margin: 0.4rem;
+}
+
+#quiz-question {
+    font-size: 1.8rem;
+    margin: 1rem 0;
+}
+
+#quiz-question input {
+    display: inline-block;
+    width: 4rem;
+
+    background: var(--darkish);
+    color: var(--light);
+
+    font-size: inherit;
+    text-align: center;
+
+    border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+#quiz-question input:invalid {
+    border: 1px solid rgb(127, 0, 0);
+}
+
+#quiz-prev, #quiz-next {
+    width: 5rem;
+}

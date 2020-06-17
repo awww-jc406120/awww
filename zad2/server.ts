@@ -5,6 +5,7 @@ let SQLiteStore = SQLiteStoreCreator(session);
 import csurf = require('csurf');
 import sqlite3 = require('sqlite3');
 sqlite3.verbose();
+import { promisify } from 'util';
 
 const app = express()
 app.set('view engine', 'pug')
@@ -37,6 +38,19 @@ function get_quiz_from_json(quiz_json: JSON): Quiz
     return <Quiz>(quiz_json as any);
 }
 
+class QuizAnswers
+{
+    answers: number[];
+    question_time_percentages: number[]
+    total_time_ms: number;
+}
+
+function get_quiz_answers_from_json(answers_json: JSON) : QuizAnswers
+{
+    return <QuizAnswers>(answers_json as any);
+}
+
+
 let db = new sqlite3.Database('quiz_server.db');
 
 function is_logged_in(session): boolean
@@ -56,37 +70,97 @@ let require_user_login = (req, res, next) =>
     }
 };
 
-async function verify_user(username: string, password: string): Promise<boolean>
+function verify_user(username: string, password: string): Promise<boolean>
 {
-    return true;
+    return new Promise((resolve) => 
+    {
+        db.get('SELECT username from users where username = ? AND password = ?',
+                username, password, (err, row) =>
+        {
+            if(row) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
 }
 
-async function get_all_quizzes(): Promise<Quiz[]>
+function get_all_quizzes(): Promise<Quiz[]>
 {
-    return [];
+    return new Promise((resolve) => 
+    {
+        db.all('SELECT quiz_id, quiz_json FROM quizzes', (err, rows) => 
+        {
+            let result: Quiz[] = [];
+
+            for(let row of rows)
+            {
+                result.push(get_quiz_from_json(JSON.parse(row.quiz_json)));
+            }
+
+            resolve(result);
+        });
+    });
 }
 
-async function get_quiz_by_id(quiz_id: number): Promise<Quiz>
+function get_quiz_by_id(quiz_id: number): Promise<Quiz>
 {
-    let result = new Quiz();
-    result.id = 0;
-    result.tasks = [];
-    return result;
+    return new Promise((resolve) => 
+    {   
+        db.get('SELECT quiz_id, quiz_json FROM quizzes WHERE quiz_id = ?', quiz_id, (err, row) => 
+        {
+            if(row) {
+                resolve(get_quiz_from_json(JSON.parse(row.quiz_json)));
+            } else {
+                resolve(null);
+            }
+        })
+    });
 }
 
-async function has_user_solved_quiz(quiz_id: number, username: string): Promise<boolean>
+function get_quiz_start_time(quiz_id: number, username: string): Promise<number>
 {
-    return false;
+    return new Promise((resolve) => 
+    {   
+        db.get('SELECT start_time FROM quiz_start_times WHERE quiz_id = ? AND username = ?', quiz_id, username, 
+        (err, row) => 
+        {
+            if(row)
+                resolve(row.start_time);
+            else
+                resolve(null);
+        });
+    });
 }
 
-async function has_user_started_quiz(quiz_id: number, username: string): Promise<boolean>
+function set_quiz_start_time(quiz_id: number, username: string): Promise<void>
 {
-    return false;
-}
+    let ms_since_epoch: number = (new Date()).getTime();
 
-async function set_quiz_start_time(quiz_id: number, username: string): Promise<void>
+    return new Promise((resolve, reject) => 
+    {
+        db.run('INSERT INTO quiz_start_times VALUES (?, ?, ?)', username, quiz_id, ms_since_epoch, (err) => {
+            if(err)
+                reject();
+            else
+                resolve();
+        });
+    });
+};
+
+function get_user_answers_for_quiz(quiz_id: number, username: string): Promise<QuizAnswers>
 {
-
+    return new Promise((resolve) => 
+    {
+        db.run('SELECT quiz_answers_json FROM quiz_answers WHERE username = ? AND quiz_id = ?', username, quiz_id, (err, row) =>
+        {
+            if(row)
+                resolve(get_quiz_answers_from_json(JSON.parse(row.quiz_answers_json)));
+            else
+                resolve(null);
+        });
+    });
 }
 
 app.get('/', (req, res) => {
@@ -99,6 +173,9 @@ app.get('/', (req, res) => {
 app.get('/quizzes', require_user_login, async (req, res) => 
 {
     let quizzes: Quiz[] = await get_all_quizzes();
+
+    console.log(quizzes.length);
+    console.log(quizzes[0].id)
 
     // Show list of quizzes
     // Each quiz can be in one of 3 states
@@ -130,20 +207,24 @@ app.post('/login', async (req, res) =>
 app.get('/quiz/:quiz_id', require_user_login, async (req, res) => 
 {   
     let username: string = req.session.username;
-    let quiz_id: number = req.paramse.memeId;
+    let quiz_id: number = req.params.quiz_id;
 
-    if(has_user_solved_quiz(quiz_id, username))
+    console.log("Getting user answers");
+
+    if(await get_user_answers_for_quiz(quiz_id, username))
     {
         res.redirect(303, '/quiz/' + quiz_id + '/results');
         return;
     }
 
+    console.log("Looking for quiz!");
     let quiz: Quiz = await get_quiz_by_id(quiz_id);
+    console.log("Found quiz!");
     if(quiz)
         res.render('quiz', {quiz_id: quiz_id, username: username});
     else
         res.redirect(303, '/quizzes');
-});
+}); 
 
 // Returns data of a given quiz in json
 app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
@@ -152,13 +233,13 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 
     let quiz_id: number = req.paramse.memeId;
 
-    if(has_user_solved_quiz(quiz_id, username))
+    if(get_user_answers_for_quiz(quiz_id, username))
     {
         res.redirect(303, '/quizresult/' + quiz_id);
         return;
     }
 
-    if(!has_user_started_quiz(quiz_id, username))
+    if(!get_quiz_start_time(quiz_id, username))
     {
         await set_quiz_start_time(quiz_id, req.session.username);
     }
@@ -182,7 +263,7 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 // Frontend uses this post to submit quiz results
 app.post('/quiz/:quiz_id/answers', require_user_login, (req, res) =>
 {
-    
+
 });
 
 // Shows page with quiz results
@@ -190,6 +271,9 @@ app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) =>
 {
 
 });
+
+app.use("/quiz.js", express.static('quiz.js'));
+app.use("/colors.css", express.static('colors.css'));
 
 console.log("Server is running!");
 app.listen(server_port);

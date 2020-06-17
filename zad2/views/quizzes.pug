@@ -1,0 +1,12 @@
+html
+    head
+        title Quizzer
+        style
+            include main.css
+            include start.css
+            include quiz.css
+            include results.css
+    body
+        h1 Quizzes:
+        each quiz in quizzes
+            a(href="/quiz/" + quiz.id)= "Quiz " + quiz.id

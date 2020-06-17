@@ -1,0 +1,56 @@
+@import url("/colors.css");
+
+#start-view {
+    text-align: center;
+}
+
+#start-button {
+    width: 80%;
+    margin-top: 5vh;
+    margin-left: 10%;
+    margin-right: 10%;
+    border: 1px solid grey;
+    background: var(--light);
+    color: var(--dark);
+}
+
+#start-button:hover {
+    background-color: var(--lightish);
+}
+
+#leaderboard {
+    display: inline-block;
+    text-align: left;
+    margin-top: 1rem;
+}
+
+#leaderboard table {
+    font-size: 1.5rem;
+    list-style-position: inside;
+    text-align: left;
+    padding-left: 0;
+}
+
+#leaderboard table td {
+    padding: 0.5rem;
+}
+
+#leaderboard table tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#leaderboard table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#leaderboard table th {
+    padding: 0.5rem 1rem;
+}
+
+/* Phone version */
+@media only screen and (max-width: 40rem)
+{
+    #leaderboard table th:nth-child(n+3), #leaderboard table td:nth-child(n+3) {
+        display: none;
+    }
+}

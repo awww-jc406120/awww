@@ -1,13 +1,12 @@
 #login-form input[type="text"], #login-form input[type="password"] {
-    margin: 1rem;
     
-
     background: var(--darkish);
     color: var(--light);
-
-    font-size: 1.5rem;
+    
+    font-size: 1.3rem;
     text-align: center;
     border: 1px solid rgb(255, 255, 255, 0.3);
-
+    
+    margin: 1rem;
     padding: 0.5rem;
 }

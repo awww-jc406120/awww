@@ -33,6 +33,7 @@ class Quiz
 {
     public id: number;
     public tasks: QuizTask[];
+    public start_time: number;
 }
 
 function get_quiz_from_json(quiz_json: JSON): Quiz
@@ -142,9 +143,13 @@ function set_quiz_start_time(quiz_id: number, username: string): Promise<void>
 
     return new Promise((resolve, reject) => 
     {
-        db.run('INSERT INTO quiz_start_times VALUES (?, ?, ?)', username, quiz_id, ms_since_epoch, (err) => {
+        db.run('INSERT INTO quiz_start_times VALUES (?, ?, ?)', username, quiz_id, ms_since_epoch, (err) => 
+        {
             if(err)
+            {
+                console.log(err);
                 reject();
+            }
             else
                 resolve();
         });
@@ -190,9 +195,6 @@ app.get('/quizzes', require_user_login, async (req, res) =>
     let username: string = req.session.username;
 
     let quizzes: Quiz[] = await get_all_quizzes();
-
-    console.log(quizzes.length);
-    console.log(quizzes[0].id)
 
     // Show list of quizzes
     // Each quiz can be in one of 3 states
@@ -245,17 +247,14 @@ app.get('/quiz/:quiz_id', require_user_login, async (req, res) =>
     let username: string = req.session.username;
     let quiz_id: number = req.params.quiz_id;
 
-    console.log("Getting user answers");
-
     if(await get_user_answers_for_quiz(quiz_id, username))
     {
         res.redirect(303, '/quiz/' + quiz_id + '/results');
         return;
     }
 
-    console.log("Looking for quiz!");
     let quiz: Quiz = await get_quiz_by_id(quiz_id);
-    console.log("Found quiz!");
+    
     if(quiz)
         res.render('quiz', {quiz_id: quiz_id, username: username});
     else
@@ -266,16 +265,17 @@ app.get('/quiz/:quiz_id', require_user_login, async (req, res) =>
 app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 {
     let username: string = req.session.username;
-
     let quiz_id: number = req.params.quiz_id;
 
     if(await get_user_answers_for_quiz(quiz_id, username))
     {
-        res.redirect(303, '/quizresult/' + quiz_id);
+        res.redirect(303, '/quiz/' + quiz_id + '/results');
         return;
     }
 
-    if(await get_quiz_start_time(quiz_id, username) === null)
+    let quiz_start_time: number = await get_quiz_start_time(quiz_id, username);
+
+    if(quiz_start_time === null)
     {
         await set_quiz_start_time(quiz_id, req.session.username);
     }
@@ -284,6 +284,8 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 
     if(quiz)
     {
+        quiz.start_time = quiz_start_time;
+
         // Censor answers
         for(let task of quiz.tasks)
         {

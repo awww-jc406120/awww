@@ -14,7 +14,7 @@ html
         a(href="/quizzes" class="back-button") Back
         div(id="results-view")
             div(class="result-time")
-                span= "Result: "
+                div= "Result: "
                 span(id="result-time")= total_time
             
             div(id="answer-summary")
@@ -23,21 +23,21 @@ html
                     tr
                         th Task
                         th Answer
-                        th Time%
                         th Correct
                         th Penalty
+                        th Time%
                     each result_data in results_data
                         if result_data.answer_good
                             tr(class="good-answer")
                                 td= result_data.task_text
                                 td= result_data.task_answer
-                                td= result_data.answer_time_percent + '%'
                                 td yes
                                 td -
+                                td= result_data.answer_time_percent + '%'
                         else
                             tr(class="bad-answer")
                                 td= result_data.task_text
                                 td= result_data.task_answer
-                                td= result_data.answer_time_percent + '%'
                                 td= result_data.task_correct_answer
                                 td= result_data.penalty + 's'
+                                td= result_data.answer_time_percent + '%'

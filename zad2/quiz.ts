@@ -10,6 +10,7 @@ class Quiz
 {
     public id: number;
     public tasks: QuizTask[];
+    public start_time: number;
 }
 
 function get_quiz_from_json(quiz_json: JSON): Quiz
@@ -166,7 +167,10 @@ function millis_as_string(time_in_ms: number): string
 
 function update_timer()
 {
-    quiz_timer.textContent = "Your time: " + millis_as_string(get_time_between(quiz_start_time, new Date()));
+    if(current_quiz.start_time)
+        quiz_timer.textContent = "Your time: " + millis_as_string((new Date()).getTime() - current_quiz.start_time);
+    else
+        quiz_timer.textContent = "Your time: " + millis_as_string(get_time_between(quiz_start_time, new Date()));
 }
 
 function run_timer()
@@ -177,7 +181,6 @@ function run_timer()
 
 // TODO - fetch from server
 let quiz_id: number = Number(quiz_id_div.innerHTML);
-console.log("quiz_id: " + quiz_id);
 
 fetch('/quiz/' + quiz_id + '/data')
 .then(response => response.json())

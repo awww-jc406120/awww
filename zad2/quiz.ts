@@ -93,16 +93,23 @@ function load_quiz_question(question_num: number)
 
 function submit_results()
 {
+    // Load question to collect current question time
+    load_quiz_question(current_question);
+
     // Collect all answers
     let my_answers = new QuizAnswers();
     my_answers.answers = new Array<number>(current_quiz.tasks.length).fill(0);
-    my_answers.question_time_percentages = new Array<number>(current_quiz.tasks.length).fill(0);
+    my_answers.question_time_percentages = answer_times;
 
-    my_answers.question_time_percentages[0] = 1;
+    let answer_times_sum: number = 0;
+    for(let t of answer_times)
+        answer_times_sum += t;
 
     for(let i: number = 0; i < current_quiz.tasks.length; i++)
     {
         my_answers.answers[i] = quiz_answers.get(i);
+        my_answers.question_time_percentages[i] /= answer_times_sum;
+        my_answers.question_time_percentages[i] *= 100.0;
     }
 
     // Send them to the server

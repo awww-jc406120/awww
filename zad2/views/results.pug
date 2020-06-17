@@ -33,11 +33,11 @@ html
                                 td= result_data.task_answer
                                 td yes
                                 td -
-                                td= result_data.answer_time_percent + '%'
+                                td= Math.floor(result_data.answer_time_percent) + '%'
                         else
                             tr(class="bad-answer")
                                 td= result_data.task_text
                                 td= result_data.task_answer
                                 td= result_data.task_correct_answer
                                 td= result_data.penalty + 's'
-                                td= result_data.answer_time_percent + '%'
+                                td= Math.floor(result_data.answer_time_percent) + '%'

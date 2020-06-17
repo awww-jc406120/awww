@@ -10,6 +10,8 @@ html
             include results.css
 
     body
+        include topbar
+        a(href="/quizzes" class="back-button") Back
         div(id="results-view")
             div(class="result-time")
                 span= "Result: "
@@ -21,7 +23,7 @@ html
                     tr
                         th Task
                         th Answer
-                        th Time
+                        th Time%
                         th Correct
                         th Penalty
                     each result_data in results_data

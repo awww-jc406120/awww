@@ -1,0 +1,10 @@
+style
+    include main.css
+    include topbar.css
+
+div(class="topbar")
+    if username
+        span(class="username")= username
+        a(href="/logout" class="login-button") Logout
+    else
+        a(href="/login" class="login-button") Login

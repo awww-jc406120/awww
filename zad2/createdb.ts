@@ -26,4 +26,16 @@ db.serialize(() =>
             {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
         ]
      }`);
+
+     db.run("INSERT INTO quizzes VALUES (1, ?)",
+    `{
+        "id": 1,
+        "tasks": [
+            {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
+            {"question": "8 + 8 / 2 * 4", "answer": 24, "penalty": 6},
+            {"question": "8 - (2 - 4) / 2", "answer": 9, "penalty": 7},
+            {"question": "7 * (3 / 7 + 3)", "answer": 24, "penalty": 8},
+            {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
+        ]
+     }`);
 });

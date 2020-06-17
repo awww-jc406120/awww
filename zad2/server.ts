@@ -187,6 +187,8 @@ app.get('/', (req, res) => {
 // If the user is logged in then show list of quizzes
 app.get('/quizzes', require_user_login, async (req, res) => 
 {
+    let username: string = req.session.username;
+
     let quizzes: Quiz[] = await get_all_quizzes();
 
     console.log(quizzes.length);
@@ -198,13 +200,26 @@ app.get('/quizzes', require_user_login, async (req, res) =>
     // 2. In progresss - show button to continue solving
     // 3. Done - show button to review results
 
-    res.render('quizzes', {quizzes: quizzes});
+    let quizzes_data: [number, string][] = [];
+    for(let i = 0; i < quizzes.length; i++)
+    {
+        let quiz_id: number = quizzes[i].id;
+
+        if(await get_user_answers_for_quiz(quizzes[i].id, username))
+            quizzes_data.push([quiz_id, "Solved"])
+        else if(await get_quiz_start_time(quizzes[i].id, username))
+            quizzes_data.push([quiz_id, "In progress"])
+        else
+            quizzes_data.push([quiz_id, "Not attempted"])
+    }
+
+    res.render('quizzes', {quizzes_data: quizzes_data, username: username});
 });
 
 // Login page - simple form that does POST /login
 app.get('/login', (req, res) => 
 {
-    res.render('login');
+    res.render('login', {username: req.session.username});
 });
 
 app.post('/login', async (req, res) => 
@@ -217,6 +232,12 @@ app.post('/login', async (req, res) =>
     else
         res.redirect(303, '/login');
 });
+
+app.get('/logout', require_user_login, async (req, res) => 
+{
+    req.session.username = undefined;
+    res.redirect(303, '/login');
+})
 
 // Returns page for solving this quiz
 app.get('/quiz/:quiz_id', require_user_login, async (req, res) => 
@@ -272,7 +293,7 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
         res.json(quiz);
     }
     else
-        res.render('404', {});
+        res.render('404', {username: username});
 });
 
 // Frontend uses this post to submit quiz results
@@ -352,7 +373,8 @@ app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) =>
 
     res.render('results', {quiz_id: quiz_id, 
                           total_time: millis_as_string(answers.total_time_ms),
-                          results_data: results_data});
+                          results_data: results_data,
+                          username: username});
 });
 
 app.use("/quiz.js", express.static('quiz.js'));

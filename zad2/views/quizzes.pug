@@ -8,7 +8,11 @@ html
             include start.css
             include quiz.css
             include results.css
+            include quizzes.css
     body
+        include topbar
         h1 Quizzes:
-        each quiz in quizzes
-            a(href="/quiz/" + quiz.id)= "Quiz " + quiz.id
+        each quiz in quizzes_data
+            div(class="quiz-button-div")
+                a(class="dark-button quiz-button" href="/quiz/" + quiz[0])= "Quiz " + quiz[0] + " - " + quiz[1]
+            

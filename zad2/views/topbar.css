@@ -1,0 +1,34 @@
+@import url("/colors.css");
+
+.topbar
+{
+    background-color: var(--dark);
+    margin-top: 0;
+    top: 0;
+    display: block;
+    padding: 2.5rem; 
+}
+
+.login-button {
+    position: absolute;
+    font-size: 1.5rem;
+    text-align: right;;
+    top: 0;
+    right: 0;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--light);
+}
+
+.username {
+    font-size: 1.5rem;
+    position: absolute;
+    top: 0;
+    right: 7rem;
+    padding: 1.5rem;
+    color: var(--light);
+}
+
+.big-font {
+    font-size: 2rem;
+}

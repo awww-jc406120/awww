@@ -11,6 +11,8 @@ html
         
         div(id="quiz-id" style="display: none;")= quiz_id
     body
+        include topbar
+        
         div(id="quiz-view")
             h1= "Hello " + username + " you are solving quiz " + quiz_id
             div(id = "quiz-introduction") Math is fun because when you know math you can spend your time doing fun math quizzes really fast!

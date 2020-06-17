@@ -8,9 +8,15 @@ html
             include start.css
             include quiz.css
             include results.css
+            include login.css
     body
-        form(action="/login" method="POST")
-            p= "Login:"
-            input(type="text" name="username" placeholder="username")
-            input(type="password" name="password" placeholder="password")
-            input(type="submit" value="Login")
+        include topbar
+        
+        div(id="login-form")
+            form(action="/login" method="POST")
+                p(class="big-font")= "Login:"
+                input(type="text" name="username" placeholder="username")
+                div
+                input(type="password" name="password" placeholder="password")
+                div
+                input(type="submit" value="Login" class="dark-button")

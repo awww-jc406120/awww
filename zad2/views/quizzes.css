@@ -1,0 +1,10 @@
+h1 
+{
+    margin-bottom: 2rem;
+}
+
+.quiz-button {
+    display: inline-block;
+    margin: 1rem;
+    text-decoration: none;
+}

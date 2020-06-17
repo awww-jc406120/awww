@@ -1,17 +1,22 @@
 html
     head
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
         title= "Quizzer Quiz " + quiz_id
         style
             include main.css
             include start.css
             include quiz.css
             include results.css
+        
+        div(id="quiz-id" style="display: none;")= quiz_id
     body
         div(id="quiz-view")
             h1= "Hello " + username + " you are solving quiz " + quiz_id
             div(id = "quiz-introduction") Math is fun because when you know math you can spend your time doing fun math quizzes really fast!
             h2(id = "quiz-question-num") 1/100
             div(id = "quiz-timer") Your time: 0s
+            div(id="quiz-question-penalty") Bad answer: +10s
             div(id = "quiz-question")
                 span(id = "quiz-question-text") 2 + 2 = 
                 input(type = "text" placeholder="?" pattern="0|-[1-9][0-9]*|[1-9][0-9]*" required)
@@ -20,3 +25,5 @@ html
             div
             button(id="quiz-cancel" class="dark-button") Cancel
             button(id="quiz-finish" class="dark-button") Finish
+
+            script(src='/quiz.js')

@@ -153,7 +153,7 @@ function get_user_answers_for_quiz(quiz_id: number, username: string): Promise<Q
 {
     return new Promise((resolve) => 
     {
-        db.run('SELECT quiz_answers_json FROM quiz_answers WHERE username = ? AND quiz_id = ?', username, quiz_id, (err, row) =>
+        db.get('SELECT quiz_answers_json FROM quiz_answers WHERE username = ? AND quiz_id = ?', username, quiz_id, (err, row) =>
         {
             if(row)
                 resolve(get_quiz_answers_from_json(JSON.parse(row.quiz_answers_json)));
@@ -231,15 +231,15 @@ app.get('/quiz/:quiz_id/data', require_user_login, async (req, res) =>
 {
     let username: string = req.session.username;
 
-    let quiz_id: number = req.paramse.memeId;
+    let quiz_id: number = req.params.quiz_id;
 
-    if(get_user_answers_for_quiz(quiz_id, username))
+    if(await get_user_answers_for_quiz(quiz_id, username))
     {
         res.redirect(303, '/quizresult/' + quiz_id);
         return;
     }
 
-    if(!get_quiz_start_time(quiz_id, username))
+    if(await get_quiz_start_time(quiz_id, username) === null)
     {
         await set_quiz_start_time(quiz_id, req.session.username);
     }

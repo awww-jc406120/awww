@@ -72,19 +72,6 @@ let start_button: HTMLElement = document.getElementById("start-button");
 let start_leaderboard: HTMLElement = document.getElementById("leaderboard");
 let start_leaderboard_table: HTMLElement = document.querySelector("#leaderboard table");
 
-let quiz_question_num: HTMLElement = document.getElementById("quiz-question-num");
-let quiz_question_text: HTMLElement = document.getElementById("quiz-question-text");
-let quiz_question_penalty: HTMLElement = document.getElementById("quiz-question-penalty");
-
-let quiz_answer_input: HTMLInputElement = document.querySelector("#quiz-question input[type=text]") as HTMLInputElement;
-
-let quiz_next_button: HTMLElement = document.getElementById("quiz-next");
-let quiz_prev_button: HTMLElement = document.getElementById("quiz-prev");
-let quiz_cancel_button: HTMLElement = document.getElementById("quiz-cancel");
-let quiz_finish_button: HTMLInputElement = document.getElementById('quiz-finish') as HTMLInputElement;
-
-let quiz_timer: HTMLElement = document.getElementById('quiz-timer');
-
 let result_time: HTMLElement = document.getElementById('result-time');
 let results_answer_table: HTMLElement = document.querySelector('#answer-summary table');
 
@@ -165,38 +152,6 @@ function load_start_view()
 
     start_leaderboard_table.innerHTML = leaderboard_html;
     start_leaderboard.style.display = "inline-block";
-}
-
-function start_quiz()
-{
-    choose_view('quiz');
-
-    let quiz_string: string = 
-    `{
-        "id": 0,
-        "tasks": [
-            {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
-            {"question": "8 + 8 / 2 * 4", "answer": 24, "penalty": 6},
-            {"question": "8 - (2 - 4) / 2", "answer": 9, "penalty": 7},
-            {"question": "7 * (3 / 7 + 3)", "answer": 24, "penalty": 8},
-            {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
-        ]
-     }`;
-    
-    let quiz: Quiz = get_quiz_from_json(JSON.parse(quiz_string));
-    current_quiz = quiz;
-    last_quiz_id = current_quiz.id;
-
-    quiz_answers = new Map();
-    quiz_start_time = new Date();
-    answer_times = new Array<number>(current_quiz.tasks.length).fill(0);
-    update_timer();
-
-    quiz_finish_button.style.display = 'none';
-
-    current_question = 0;
-    cur_question_start_time = quiz_start_time;
-    load_quiz_question(0);
 }
 
 function load_quiz_question(question_num: number)

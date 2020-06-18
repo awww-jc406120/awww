@@ -440,6 +440,17 @@ app.post('/quiz/:quiz_id/answers', require_user_login, async (req, res) =>
         if(quiz_answers.answers[i] != quiz.tasks[i].answer)
             quiz_answers.total_time_ms += quiz.tasks[i].penalty * 1000;
 
+    let percentages_sum: number = 0;
+    for(let percentage of quiz_answers.question_time_percentages)
+        percentages_sum += percentage;
+
+    if(Math.abs(percentages_sum - 100.0) > 1.0)
+    {
+        console.log("Cheater detected! username: " + username);
+        res.status(400).send('Bad request');
+        return;
+    }
+
     await set_user_answers_for_quiz(quiz_id, req.session.username, quiz_answers);
 
     res.redirect(303, '/quiz/' + quiz_id + '/results');

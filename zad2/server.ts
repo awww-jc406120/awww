@@ -7,6 +7,8 @@ import sqlite3 = require('sqlite3');
 sqlite3.verbose();
 import { promisify } from 'util';
 import bodyParser = require('body-parser')
+import bcrypt = require('bcrypt');
+let saltRounds = 2;
 
 const app = express()
 app.set('view engine', 'pug')
@@ -56,17 +58,25 @@ function get_quiz_answers_from_json(answers_json: JSON) : QuizAnswers
 
 let db = new sqlite3.Database('quiz_server.db');
 
-function is_logged_in(session): boolean
+function get_password_version(username: string): Promise<number>
 {
-    if(session.username)
-        return true;
-    else
-        return false;
+    return new Promise((resolve) => 
+    {
+        db.get('SELECT pass_version from users WHERE username = ?', username, (err, row) =>
+        {
+            if(row)
+                resolve(row.pass_version);
+            else
+                resolve(null);
+        });
+    });
 }
 
-let require_user_login = (req, res, next) =>
+let require_user_login = async (req, res, next) =>
 {
-    if (req.session.username)  {
+    if (req.session.username
+    && req.session.pass_version === (await get_password_version(req.session.username)))  
+    {
         next();
     } else {
         res.redirect(303, '/login')
@@ -77,11 +87,11 @@ function verify_user(username: string, password: string): Promise<boolean>
 {
     return new Promise((resolve) => 
     {
-        db.get('SELECT username from users where username = ? AND password = ?',
-                username, password, (err, row) =>
+        db.get('SELECT username, pass_hash from users where username = ?',
+                username, async (err, row) =>
         {
             if(row) {
-                resolve(true);
+                resolve(await bcrypt.compare(password, row.pass_hash));
             } else {
                 resolve(false);
             }
@@ -91,9 +101,14 @@ function verify_user(username: string, password: string): Promise<boolean>
 
 function change_user_password(username: string, new_password: string): Promise<void>
 {
-    return new Promise((resolve, reject) => 
+    return new Promise(async (resolve, reject) => 
     {
-        db.run('UPDATE users SET password = ? WHERE username = ?', new_password, username, (err) => 
+        let cur_version: number = await get_password_version(username);
+
+        let new_salt = await bcrypt.genSalt(saltRounds);
+        let new_hash = await bcrypt.hash(new_password, new_salt);
+
+        db.run('UPDATE users SET pass_hash = ?, pass_version = ? WHERE username = ?', new_hash, cur_version + 1, username, (err) => 
         {
             if(err)
             {
@@ -183,7 +198,7 @@ async function get_user_answers_for_quiz(quiz_id: number, username: string): Pro
     // Retrieve answers
     await new Promise((resolve) => 
     {
-        db.all('SELECT answer, time_ms FROM quiz_answers WHERE username = ? AND quiz_id = ? ORDER BY quiz_id', username, quiz_id, 
+        db.all('SELECT question_id, answer, time_ms FROM quiz_answers WHERE username = ? AND quiz_id = ? ORDER BY question_id', username, quiz_id, 
         (err, rows) =>
         {
             if(rows)
@@ -310,6 +325,7 @@ app.post('/login', async (req, res) =>
     if(await verify_user(req.body.username, req.body.password))
     {
         req.session.username = req.body.username;
+        req.session.pass_version = await get_password_version(req.body.username);
         res.redirect(303, '/quizzes');
     }
     else

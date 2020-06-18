@@ -8,3 +8,10 @@ h1
     margin: 1rem;
     text-decoration: none;
 }
+
+.reset-pass {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-decoration: none;
+}

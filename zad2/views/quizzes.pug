@@ -15,4 +15,7 @@ html
         each quiz in quizzes_data
             div(class="quiz-button-div")
                 a(class="dark-button quiz-button" href="/quiz/" + quiz[0])= "Quiz " + quiz[0] + " - " + quiz[1]
+
+        div
+            a(href="/resetpassword" class="dark-button reset-pass") Reset password
             

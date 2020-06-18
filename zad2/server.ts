@@ -13,10 +13,9 @@ app.set('view engine', 'pug')
 app.use(express.urlencoded({extended: true})); 
 app.use(bodyParser.json())
 app.use(session({resave: false, 
-                 saveUninitialized: true,
+                 saveUninitialized: false,
                  store: new SQLiteStore,
-                 secret: "vAiUamCztn0iUQOL5ymUAeHiBHwqmttMVqXj34qqHeCk57C4I1WVYZavB8i0nxWpOlvWT4ox7oHu1BgSmDJdJfhsSBwBt8OZuFKWeXmFEGTZQwnpZcxX8ced6PZbQE29uz5HEgpHfhE2yqWrcQPJ41BCjwO7Ruomb2lpKkUHYZAgZ0T7JRoQSiqZUGWVHKIegM1lnmDRMNh931ubtyB1gsxmALp6mksxdWjoTrsy1zcaRB1r9pnckXi2ZlSRcE2NwyM81O4m0PnnlFchVdXQ9Em9fqav3D8dG33M77OdJGCuHjAjAF0gwKGx1ik15akwhenWraNC0s7abV4rSflbHm7nskRuhVEfUzhOWoRhjwDFqE2E7SgEgUmKjX9gJOesadPVTZXDfLvPvS2Zj6z8K99rQBPkS5IXwfjuDUJJLIJDN52U97iQHfGn3b7By04xfpgZOTfo37YWIHyYBh4dhD8jIHH90qUf5dzaVDjSfoucttjez7ysuV5CZQMpXd4hXHQ7b7G5mjpCHEtLo0dcY2vsiG7zjKn9RcboihrnI2fWhxhAkWXyt7UorhIF6RFKPPASohZnf2YOBZunU01JijOEgCKQYddvKjtsGHevaQ3rcZ8tIjtwDCm1qNtY7mXLxuUp8l20f4vXNEfvxY1UHp07fYrdYWBollGcsGiLwbSiJMutgSF1HCiHmtrU32V6YLHoMkxMfYAeXMDoF5YOCxFyqwAXx0K8Mq2jdraA6JKI4K0DAMTtB1MDaPSLkSHvzLzbwqhRRnFsHB2PlCw6qJLw6VZxvyS8ed5OuFvTuIz8Z2iqhDWnLAIFvuDRmtgJE0p3ctTixwuYsxDilScUbnt047Xm91axH8rMSY8osEmTOomgxb3w6bGB96vY2M5pX8d8ojVhGlyOkgW4kdWXByktRjXcvg1Rvi2zmryR1g7KTYunoIAHKMeyggbyZ0oVo5V76tZEWSaQVdRYRDbX8M0b00xEj9DE7kedFFP3wZgxnSiam28oRsHBbg8u24Bi",
-                 cookie: { maxAge: 15 * 60 * 1000} // 15 minutes
+                 secret: "vAiUamCztn0iUQOL5ymUAeHiBHwqmttMVqXj34qqHeCk57C4I1WVYZavB8i0nxWpOlvWT4ox7oHu1BgSmDJdJfhsSBwBt8OZuFKWeXmFEGTZQwnpZcxX8ced6PZbQE29uz5HEgpHfhE2yqWrcQPJ41BCjwO7Ruomb2lpKkUHYZAgZ0T7JRoQSiqZUGWVHKIegM1lnmDRMNh931ubtyB1gsxmALp6mksxdWjoTrsy1zcaRB1r9pnckXi2ZlSRcE2NwyM81O4m0PnnlFchVdXQ9Em9fqav3D8dG33M77OdJGCuHjAjAF0gwKGx1ik15akwhenWraNC0s7abV4rSflbHm7nskRuhVEfUzhOWoRhjwDFqE2E7SgEgUmKjX9gJOesadPVTZXDfLvPvS2Zj6z8K99rQBPkS5IXwfjuDUJJLIJDN52U97iQHfGn3b7By04xfpgZOTfo37YWIHyYBh4dhD8jIHH90qUf5dzaVDjSfoucttjez7ysuV5CZQMpXd4hXHQ7b7G5mjpCHEtLo0dcY2vsiG7zjKn9RcboihrnI2fWhxhAkWXyt7UorhIF6RFKPPASohZnf2YOBZunU01JijOEgCKQYddvKjtsGHevaQ3rcZ8tIjtwDCm1qNtY7mXLxuUp8l20f4vXNEfvxY1UHp07fYrdYWBollGcsGiLwbSiJMutgSF1HCiHmtrU32V6YLHoMkxMfYAeXMDoF5YOCxFyqwAXx0K8Mq2jdraA6JKI4K0DAMTtB1MDaPSLkSHvzLzbwqhRRnFsHB2PlCw6qJLw6VZxvyS8ed5OuFvTuIz8Z2iqhDWnLAIFvuDRmtgJE0p3ctTixwuYsxDilScUbnt047Xm91axH8rMSY8osEmTOomgxb3w6bGB96vY2M5pX8d8ojVhGlyOkgW4kdWXByktRjXcvg1Rvi2zmryR1g7KTYunoIAHKMeyggbyZ0oVo5V76tZEWSaQVdRYRDbX8M0b00xEj9DE7kedFFP3wZgxnSiam28oRsHBbg8u24Bi"
                 }));
 // app.use(csurf({cookie: false}));
 
@@ -85,6 +84,23 @@ function verify_user(username: string, password: string): Promise<boolean>
             } else {
                 resolve(false);
             }
+        });
+    });
+}
+
+function change_user_password(username: string, new_password: string): Promise<void>
+{
+    return new Promise((resolve, reject) => 
+    {
+        db.run('UPDATE users SET password = ? WHERE username = ?', new_password, username, (err) => 
+        {
+            if(err)
+            {
+                console.log(err);
+                reject();
+            }
+            else
+                resolve();
         });
     });
 }
@@ -241,6 +257,24 @@ app.get('/logout', require_user_login, async (req, res) =>
     res.redirect(303, '/login');
 })
 
+app.get('/resetpassword', require_user_login, async (req, res) => 
+{
+    res.render('reset_password', {username: req.session.username});
+});
+
+app.post('/resetpassword', require_user_login, async (req, res) =>
+{
+    let password1: string = req.body.password1;
+    let password2: string = req.body.password2;
+
+    if(password1 != password2)
+        res.redirect(303, '/resetpassword');
+
+    await change_user_password(req.session.username, password1);
+
+    res.redirect(303, '/quizzes');
+});
+
 // Returns page for solving this quiz
 app.get('/quiz/:quiz_id', require_user_login, async (req, res) => 
 {   
@@ -380,6 +414,7 @@ app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) =>
 });
 
 app.use("/quiz.js", express.static('quiz.js'));
+app.use("/pass_reset.js", express.static('pass_reset.js'));
 app.use("/colors.css", express.static('colors.css'));
 
 console.log("Server is running!");

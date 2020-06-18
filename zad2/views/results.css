@@ -35,17 +35,6 @@
     background: #ff000033;
 }
 
-.back-button {
-    position: absolute;
-    font-size: 1.5rem;
-    text-align: right;;
-    top: 0;
-    left: 0;
-    padding: 1.5rem;
-    text-decoration: none;
-    color: var(--light);
-}
-
 /* Phone version */
 @media only screen and (max-width: 30rem)
 {

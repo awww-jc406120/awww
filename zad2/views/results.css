@@ -39,7 +39,8 @@
 @media only screen and (max-width: 30rem)
 {
     #answer-summary table th:nth-child(4), #answer-summary table td:nth-child(4),
-    #answer-summary table th:nth-child(5), #answer-summary table td:nth-child(5) {
+    #answer-summary table th:nth-child(5), #answer-summary table td:nth-child(5),
+    #answer-summary table th:nth-child(6), #answer-summary table td:nth-child(6) {
         display: none;
     }
 }

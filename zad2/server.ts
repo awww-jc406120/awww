@@ -43,7 +43,8 @@ function get_quiz_from_json(quiz_json: JSON): Quiz
 class QuizAnswers
 {
     answers: number[];
-    question_time_percentages: number[]
+    question_time_percentages: number[];
+    question_times_ms: number[];
     total_time_ms: number;
 }
 
@@ -172,29 +173,93 @@ function set_quiz_start_time(quiz_id: number, username: string): Promise<void>
     });
 };
 
-function get_user_answers_for_quiz(quiz_id: number, username: string): Promise<QuizAnswers>
+async function get_user_answers_for_quiz(quiz_id: number, username: string): Promise<QuizAnswers>
 {
-    return new Promise((resolve) => 
+    let result: QuizAnswers = new QuizAnswers();
+    result.answers = [];
+    result.total_time_ms = 1e18;
+    result.question_times_ms = [];
+
+    // Retrieve answers
+    await new Promise((resolve) => 
     {
-        db.get('SELECT quiz_answers_json FROM quiz_answers WHERE username = ? AND quiz_id = ?', username, quiz_id, (err, row) =>
+        db.all('SELECT answer, time_ms FROM quiz_answers WHERE username = ? AND quiz_id = ? ORDER BY quiz_id', username, quiz_id, 
+        (err, rows) =>
         {
+            if(rows)
+            {
+                for(let row of rows)
+                {
+                    result.answers.push(row.answer);
+                    result.question_times_ms.push(row.time_ms);
+                }
+            }
+        });
+
+        resolve();
+    });
+
+    // Retrieve quiz time
+    await new Promise((resolve) => 
+    {   
+        db.get('SELECT time_ms FROM quiz_times WHERE username = ? AND quiz_id = ?', username, quiz_id, (err, row) => {
             if(row)
-                resolve(get_quiz_answers_from_json(JSON.parse(row.quiz_answers_json)));
-            else
-                resolve(null);
+                result.total_time_ms = row.time_ms;
+
+            resolve();
+        })
+    });
+
+    if(result.answers.length > 0)
+        return result;
+    else
+        return null;
+}
+
+function set_user_answers_for_quiz(quiz_id: number, username: string, answers: QuizAnswers)
+{
+    db.run('INSERT INTO quiz_times VALUES (?, ?, ?)', username, quiz_id, answers.total_time_ms);
+    // Insert question answers and times
+    for(let i: number = 0; i < answers.answers.length; i++)
+    {
+        let cur_time: number = answers.question_time_percentages[i]/100.0 * answers.total_time_ms;
+
+        db.run('INSERT INTO quiz_answers VALUES (?, ?, ?, ?, ?)', username, quiz_id, i, answers.answers[i], cur_time);
+    }
+}
+
+function get_top_results_for_quiz(quiz_id: number): Promise<[string, string][]>
+{
+    let result: [string, string][] = [];
+
+    return new Promise((resolve) =>
+    {
+        db.all('SELECT username, time_ms FROM quiz_times WHERE quiz_id = ? ORDER BY time_ms', quiz_id, (err, rows) => 
+        {
+            for(let row of rows)
+            {
+                if(result.length === 5)
+                    break;
+
+                result.push([millis_as_string(row.time_ms), row.username]);
+            }
+
+            resolve(result);
         });
     });
 }
 
-function set_user_answers_for_quiz(quiz_id: number, username: string, answers: QuizAnswers): Promise<void>
+function get_average_question_time(quiz_id: number, question_num: number): Promise<number>
 {
-    return new Promise((resolve, reject) => 
+    return new Promise((resolve) => 
     {
-        db.run('INSERT INTO quiz_answers VALUES (?, ?, ?)', username, quiz_id, JSON.stringify(answers), (err) => {
-            if(err)
-                reject();
+        db.get('SELECT AVG(time_ms) avg_time FROM quiz_answers WHERE quiz_id = ? AND question_id = ?;', quiz_id, question_num,
+        (err, row) =>
+        {
+            if(row)
+                resolve(row.avg_time);
             else
-                resolve();
+                resolve(null);
         });
     });
 }
@@ -402,14 +467,18 @@ app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) =>
             task_text: quiz.tasks[i].question,
             task_answer: answers.answers[i],
             task_correct_answer: quiz.tasks[i].answer,
-            answer_time_percent: answers.question_time_percentages[i],
-            penalty: quiz.tasks[i].penalty
+            answer_time: millis_as_string(answers.question_times_ms[i]),
+            penalty: quiz.tasks[i].penalty,
+            avg_time: millis_as_string(await get_average_question_time(quiz.id, i))
         });
     }
+
+    let top_quiz_results: [string, string][] = await get_top_results_for_quiz(quiz_id);
 
     res.render('results', {quiz_id: quiz_id, 
                           total_time: millis_as_string(answers.total_time_ms),
                           results_data: results_data,
+                          leaderboard_results: top_quiz_results,
                           username: username});
 });
 

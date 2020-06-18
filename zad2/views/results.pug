@@ -25,7 +25,8 @@ html
                         th Answer
                         th Correct
                         th Penalty
-                        th Time%
+                        th Time
+                        th Average User Time
                     each result_data in results_data
                         if result_data.answer_good
                             tr(class="good-answer")
@@ -33,11 +34,25 @@ html
                                 td= result_data.task_answer
                                 td yes
                                 td -
-                                td= Math.floor(result_data.answer_time_percent) + '%'
+                                td= result_data.answer_time
+                                td= result_data.avg_time
                         else
                             tr(class="bad-answer")
                                 td= result_data.task_text
                                 td= result_data.task_answer
                                 td= result_data.task_correct_answer
                                 td= result_data.penalty + 's'
-                                td= Math.floor(result_data.answer_time_percent) + '%'
+                                td= result_data.answer_time
+                                td= result_data.avg_time
+            div
+            div(id="leaderboard")
+                h2 Leaderboard:
+                table(cellspacing="0")
+                    tr
+                        th Time
+                        th Username
+
+                    each leaderboard_result in leaderboard_results
+                        tr
+                            td= leaderboard_result[0]
+                            td= leaderboard_result[1]

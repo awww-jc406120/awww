@@ -33,7 +33,7 @@ db.serialize(() =>
 
     // Add quizzes
     db.run("INSERT INTO quizzes VALUES (0, ?)",
-    `{
+    JSON.stringify({
         "id": 0,
         "tasks": [
             {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
@@ -42,17 +42,17 @@ db.serialize(() =>
             {"question": "7 * (3 / 7 + 3)", "answer": 24, "penalty": 8},
             {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
         ]
-     }`);
+     }));
 
-     db.run("INSERT INTO quizzes VALUES (1, ?)",
-    `{
+    db.run("INSERT INTO quizzes VALUES (1, ?)",
+    JSON.stringify({
         "id": 1,
         "tasks": [
-            {"question": "2 + 2 * 2", "answer": 6, "penalty": 5},
-            {"question": "8 + 8 / 2 * 4", "answer": 24, "penalty": 6},
-            {"question": "8 - (2 - 4) / 2", "answer": 9, "penalty": 7},
-            {"question": "7 * (3 / 7 + 3)", "answer": 24, "penalty": 8},
-            {"question": "9 / 2 - 10 / 4", "answer": 2, "penalty": 9}
+            {"question": "3 + 3 * 3", "answer": 12, "penalty": 6},
+            {"question": "9 + 9 / 3 * 3", "answer": 18, "penalty": 5},
+            {"question": "9 - (6 - 3) / 3", "answer": 10, "penalty": 7},
+            {"question": "9 * (6 / 9 + 6)", "answer": 54, "penalty": 8},
+            {"question": "3 / 2 - 6 / 4", "answer": 0, "penalty": 9}
         ]
-     }`);
+     }));
 });

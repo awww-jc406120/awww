@@ -4,23 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./tests/test.sh",
     "server": "npx ts-node server.ts",
-    "createdb": "npx ts-node createdb.ts"
+    "createdb": "npx ts-node createdb.ts",
+    "clean": "rm -f sessions quiz_server.db"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "chai": "^4.2.0",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "mocha": "^8.0.1",
     "pug": "^3.0.0",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5",
     "util": "^0.12.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/selenium-webdriver": "^4.0.9",
+    "mocha-webdriver": "^0.2.8",
+    "selenium-webdriver": "^4.0.0-alpha.7"
+  }
 }

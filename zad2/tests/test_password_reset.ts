@@ -60,11 +60,6 @@ describe('testResetPassword', function () {
         await (await driver.find('input[type=submit]')).doClick();
 
         expect(await driver.getCurrentUrl()).to.equal('http://127.0.0.1:3000/quizzes');
-
-        //expect(await driver.find('[selektor.opisu.miasta.docelowego]').getText()).to.include('[miasto.docelowe]');
-
-        //await driver.find('input[type=text]').sendKeys('Jan Woreczko');
-        //await driver.find('button').doClick();
     });
 })
 

@@ -509,8 +509,11 @@ app.get('/quiz/:quiz_id/results', require_user_login, async (req, res) =>
                           username: username});
 });
 
-app.use("/quiz.js", express.static('quiz.js'));
-app.use("/pass_reset.js", express.static('pass_reset.js'));
+let javascript_content_type = (req, res, next) =>
+    { res.set('Content-Type', 'application/javascript'); next(); }
+
+app.use("/quiz.js", javascript_content_type, express.static('quiz.js'));
+app.use("/pass_reset.js", javascript_content_type, express.static('pass_reset.js'));
 app.use("/colors.css", express.static('colors.css'));
 
 console.log("Server is running!");

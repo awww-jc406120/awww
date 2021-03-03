@@ -14,7 +14,7 @@
     "csurf": "^1.11.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "pug": "^2.0.4"
+    "pug": "^3.0.1"
   },
   "devDependencies": {
     "ts-node": "^8.10.1"
